@@ -97,3 +97,116 @@ export async function stravaFetch<T>(path: string, accessToken: string): Promise
   }
   return res.json();
 }
+
+export type StravaActivity = {
+  id: number;
+  name: string;
+  type: string;
+  sport_type: string;
+  distance: number; // mètres
+  moving_time: number; // secondes
+  total_elevation_gain: number; // mètres
+  average_speed: number; // m/s
+  start_date: string; // ISO 8601 UTC
+};
+
+const CYCLING_SPORT_TYPES = new Set([
+  "Ride",
+  "VirtualRide",
+  "GravelRide",
+  "MountainBikeRide",
+  "EBikeRide",
+]);
+
+/** Activités de l'athlète sur la période donnée (paginé, plus récentes d'abord). */
+export async function getActivities(
+  accessToken: string,
+  { after, before }: { after?: number; before?: number } = {}
+): Promise<StravaActivity[]> {
+  const perPage = 100;
+  const activities: StravaActivity[] = [];
+
+  for (let page = 1; page <= 5; page++) {
+    const search = new URLSearchParams({ per_page: String(perPage), page: String(page) });
+    if (after) search.set("after", String(after));
+    if (before) search.set("before", String(before));
+
+    const batch = await stravaFetch<StravaActivity[]>(
+      `/athlete/activities?${search.toString()}`,
+      accessToken
+    );
+    activities.push(...batch);
+    if (batch.length < perPage) break;
+  }
+
+  return activities;
+}
+
+function monthsAgo(date: Date, months: number): Date {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() - months);
+  return d;
+}
+
+function toEpoch(date: Date): number {
+  return Math.floor(date.getTime() / 1000);
+}
+
+export type CyclingStats = {
+  distanceKm: number;
+  elevationGainM: number;
+  avgSpeedKmh: number;
+};
+
+export type CyclingTrend = Partial<Record<keyof CyclingStats, number>>;
+
+export type CyclingStatsWithTrend = CyclingStats & {
+  /** % de variation vs le mois précédent. */
+  trend: CyclingTrend;
+};
+
+function aggregateRides(rides: StravaActivity[]): CyclingStats {
+  const distanceM = rides.reduce((sum, a) => sum + a.distance, 0);
+  const movingTimeS = rides.reduce((sum, a) => sum + a.moving_time, 0);
+  const elevationGainM = rides.reduce((sum, a) => sum + (a.total_elevation_gain ?? 0), 0);
+
+  return {
+    distanceKm: distanceM / 1000,
+    elevationGainM,
+    // Moyenne pondérée par le temps (plus juste qu'une moyenne des average_speed par sortie).
+    avgSpeedKmh: movingTimeS > 0 ? (distanceM / movingTimeS) * 3.6 : 0,
+  };
+}
+
+function percentChange(current: number, previous: number): number | undefined {
+  if (previous === 0) return current === 0 ? 0 : undefined;
+  return ((current - previous) / previous) * 100;
+}
+
+/** Stats vélo du dernier mois (+ tendance vs le mois précédent). */
+export async function getMonthlyCyclingStats(
+  accessToken: string
+): Promise<CyclingStatsWithTrend> {
+  const now = new Date();
+  const filterRides = (activities: StravaActivity[]) =>
+    activities.filter((a) => CYCLING_SPORT_TYPES.has(a.sport_type ?? a.type));
+
+  const [currentActivities, previousActivities] = await Promise.all([
+    getActivities(accessToken, { after: toEpoch(monthsAgo(now, 1)) }),
+    getActivities(accessToken, {
+      after: toEpoch(monthsAgo(now, 2)),
+      before: toEpoch(monthsAgo(now, 1)),
+    }),
+  ]);
+
+  const current = aggregateRides(filterRides(currentActivities));
+  const previous = aggregateRides(filterRides(previousActivities));
+
+  const trend: CyclingTrend = {
+    distanceKm: percentChange(current.distanceKm, previous.distanceKm),
+    elevationGainM: percentChange(current.elevationGainM, previous.elevationGainM),
+    avgSpeedKmh: percentChange(current.avgSpeedKmh, previous.avgSpeedKmh),
+  };
+
+  return { ...current, trend };
+}
