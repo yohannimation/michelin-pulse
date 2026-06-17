@@ -10,7 +10,7 @@ export default async function DashboardLayout({
     <>
       <SiteHeader avatar={session?.athlete.profile} />
       {/* pb mobile : laisse la place à la barre de nav fixe du bas. */}
-      <main className="flex-1 pb-16 md:pb-0">{children}</main>
+      <main className="flex-1 pb-16 md:pb-0 px-8 md:px-20 py-5">{children}</main>
     </>
   );
 }
