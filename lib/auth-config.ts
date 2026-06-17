@@ -4,9 +4,13 @@
 export const SESSION_COOKIE = "mp_session";
 export const STATE_COOKIE = "mp_oauth_state";
 
-// Scopes Strava : lecture du profil + activités (y compris privées) pour
-// personnaliser la recommandation (terrain, météo, distance, puissance).
-export const STRAVA_SCOPES = "read,activity:read_all";
+// Scopes Strava :
+//  - read                : profil public (nom, ville, avatar)
+//  - profile:read_all     : profil complet, dont le GARAGE (vélos/gear)
+//  - activity:read_all    : activités (y compris privées) pour les stats
+// `profile:read_all` est indispensable pour importer les vélos : sans lui,
+// le tableau `bikes` de `GET /athlete` revient vide.
+export const STRAVA_SCOPES = "read,profile:read_all,activity:read_all";
 
 export const STRAVA_AUTHORIZE_URL = "https://www.strava.com/oauth/authorize";
 export const STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token";

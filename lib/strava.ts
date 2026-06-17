@@ -14,6 +14,48 @@ export type StravaAthlete = {
   country?: string;
 };
 
+/** Un équipement (vélo / paire de chaussures) déclaré sur Strava. */
+export type StravaGear = {
+  id: string;
+  name: string;
+  distance: number; // mètres (cumul Strava sur cet équipement)
+  primary?: boolean;
+  // Champs renvoyés uniquement par la représentation détaillée `/gear/{id}`.
+  brand_name?: string;
+  model_name?: string;
+  frame_type?: number; // 1 VTT · 2 Cyclocross · 3 Route · 4 CLM · 5 Gravel
+  description?: string;
+};
+
+/**
+ * Profil détaillé renvoyé par `GET /athlete` (plus complet que ce qu'on
+ * stocke en session). Champs optionnels : Strava ne les renvoie pas toujours.
+ */
+export type StravaDetailedAthlete = StravaAthlete & {
+  premium?: boolean; // ancien nom de l'abonnement payant
+  summit?: boolean; // nom actuel de l'abonnement payant
+  created_at?: string; // date d'inscription (ISO)
+  weight?: number; // kg
+  bikes?: StravaGear[];
+  shoes?: StravaGear[];
+};
+
+/** Totaux cumulés d'un type d'activité (renvoyés par `/athletes/{id}/stats`). */
+export type StravaActivityTotals = {
+  count: number;
+  distance: number; // mètres
+  moving_time: number; // secondes
+  elevation_gain: number; // mètres
+};
+
+/** Statistiques agrégées d'un athlète (`GET /athletes/{id}/stats`). */
+export type StravaStats = {
+  recent_ride_totals: StravaActivityTotals;
+  ytd_ride_totals: StravaActivityTotals;
+  all_ride_totals: StravaActivityTotals;
+  biggest_ride_distance?: number;
+};
+
 /** Réponse d'échange/refresh de token Strava. */
 export type StravaTokenResponse = {
   token_type: string;
@@ -209,4 +251,37 @@ export async function getMonthlyCyclingStats(
   };
 
   return { ...current, trend };
+}
+
+/** Profil détaillé de l'athlète connecté (`GET /athlete`). */
+export function getDetailedAthlete(accessToken: string) {
+  return stravaFetch<StravaDetailedAthlete>("/athlete", accessToken);
+}
+
+/** Statistiques cumulées d'un athlète (`GET /athletes/{id}/stats`). */
+export function getAthleteStats(athleteId: number, accessToken: string) {
+  return stravaFetch<StravaStats>(`/athletes/${athleteId}/stats`, accessToken);
+}
+
+/** Détail d'un équipement, dont marque/modèle/type de cadre (`GET /gear/{id}`). */
+export function getGear(gearId: string, accessToken: string) {
+  return stravaFetch<StravaGear>(`/gear/${gearId}`, accessToken);
+}
+
+/** Libellé FR du type de cadre Strava (`frame_type`). */
+export function frameTypeLabel(frameType?: number): string | undefined {
+  switch (frameType) {
+    case 1:
+      return "VTT";
+    case 2:
+      return "Cyclocross";
+    case 3:
+      return "Route";
+    case 4:
+      return "Contre-la-montre";
+    case 5:
+      return "Gravel";
+    default:
+      return undefined;
+  }
 }
