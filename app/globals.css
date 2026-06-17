@@ -39,6 +39,17 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* Couleurs de marque MICHELIN (charte digitale, mars 2024). */
+  --color-michelin-blue: #27509b; /* Bleu Michelin — couleur de référence */
+  --color-michelin-blue-dark: #00205b; /* Bleu foncé Michelin (secondaire) */
+  --color-michelin-midnight: #000c34; /* Midnight Blue — fonds immersifs */
+  --color-michelin-blue-light: #d4e7fa; /* Primary blue Light 01 — applats clairs */
+  --color-michelin-yellow: #fce500; /* Jaune Michelin — accentuation */
+  --color-michelin-green: #2e7d32; /* Valide */
+  --color-michelin-danger: #b71c1c; /* Danger ou erreur */
+  --color-michelin-gray: #53565a; /* Gris responsable (secondaire) */
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
