@@ -35,12 +35,6 @@ export default async function Login({
   return (
     <div className="flex min-h-dvh justify-center bg-background">
       <div className="flex min-h-dvh w-[30vw] flex-col">
-        {/* Header */}
-      <header className="flex items-center gap-2 px-5 pt-4 pb-2">
-        <h1 className="text-xl font-bold tracking-tight">Connexion</h1>
-      </header>
-
-      {/* Content */}
       <main className="flex flex-1 flex-col justify-center px-6">
         {/* Brand lockup */}
         <div className="flex items-center justify-center gap-4">

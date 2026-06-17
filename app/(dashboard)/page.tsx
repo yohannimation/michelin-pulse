@@ -8,7 +8,7 @@ export default async function Dashboard() {
   const athlete = session?.athlete;
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center gap-6 p-6">
+    <div className="flex min-h-[calc(100dvh-4rem)] flex-col items-center justify-center gap-6 p-6">
       <div className="flex flex-col items-center gap-3">
         {athlete?.profile && (
           <Image
