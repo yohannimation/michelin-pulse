@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/item"
 import { Progress } from "@/components/ui/progress";
 import { Medal, TickCircle, Timer1 } from "iconsax-react";
+import { MobileTopBar } from "@/components/mobile-top-bar";
 import { getProfileData } from "@/lib/profile";
 import { getGarage } from "@/lib/garage";
 import { ScanBikeButton } from "@/components/loyalty/ScanBikeButton";
@@ -68,8 +69,9 @@ export default async function Loyalty() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <h1 className="font-heading text-2xl font-bold md:text-3xl">Fidélité</h1>
+    <div className="mx-auto max-w-5xl px-2 pt-2 md:px-5 md:pt-5">
+      <MobileTopBar avatar={profile.avatar} initials={profile.initials} />
+
       <div className="grid grid-cols-3 gap-5 py-8">
         <div className="col-span-full xl:col-span-1">
           <div className="flex flex-col gap-5 p-6 rounded-3xl bg-michelin-blue text-white">
