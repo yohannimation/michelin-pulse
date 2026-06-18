@@ -53,7 +53,7 @@ export const EVENTS: MichelinEvent[] = [
   {
     variant: "course",
     id: "granfondo-lyon",
-    badge: "Vente privée",
+    badge: "Évènement privé",
     title: "Granfondo Lyon",
     editionLabel: "Édition MICHELIN",
     date: "28 juin",
