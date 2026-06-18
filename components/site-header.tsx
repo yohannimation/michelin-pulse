@@ -5,10 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Calendar,
-  Chart21,
   Cup,
   Home2,
   Profile,
+  Scan,
   ShoppingCart,
   type Icon as IconaxIcon,
 } from "iconsax-react";
@@ -22,10 +22,12 @@ type NavItem = {
   isProfile?: boolean;
 };
 
+// Scan en 3e position : centré sur les deux formats (desktop et mobile
+// partagent le même ordre).
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Accueil", Icon: Home2 },
-  { href: "/analysis", label: "Analyse", Icon: Chart21 },
   { href: "/event", label: "Événement", Icon: Calendar },
+  { href: "/analysis", label: "Scan", Icon: Scan },
   { href: "/loyalty", label: "Fidélité", Icon: Cup },
   { href: "/shop", label: "Boutique", Icon: ShoppingCart },
   { href: "/profile", label: "Profil", Icon: Profile, isProfile: true },
@@ -56,7 +58,7 @@ function ItemIcon({
         style={{ width: size, height: size }}
         className={cn(
           "rounded-full object-cover ring-1 ring-foreground/10",
-          active && "ring-2 ring-[#FC4C02]"
+          active && "ring-2 ring-michelin-blue"
         )}
         unoptimized
       />
@@ -101,7 +103,7 @@ export function SiteHeader({ avatar }: { avatar?: string }) {
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "flex items-center gap-2 rounded-lg px-4 py-2 text-lg font-medium transition-colors",
-                    active ? "text-[#FC4C02]" : "text-[#0A0A0A] hover:opacity-70"
+                    active ? "text-michelin-blue" : "text-[#0A0A0A] hover:opacity-70"
                   )}
                 >
                   {item.label}
@@ -133,7 +135,7 @@ export function SiteHeader({ avatar }: { avatar?: string }) {
         className="fixed inset-x-0 bottom-0 z-50 flex items-stretch justify-around border-t border-border bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
         aria-label="Navigation principale"
       >
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS.filter((item) => !item.isProfile).map((item) => {
           const active = isActive(pathname, item.href);
           return (
             <Link
@@ -142,7 +144,7 @@ export function SiteHeader({ avatar }: { avatar?: string }) {
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-                active ? "text-[#FC4C02]" : "text-muted-foreground"
+                active ? "text-michelin-blue" : "text-muted-foreground"
               )}
             >
               <ItemIcon item={item} active={active} avatar={avatar} size={24} />
