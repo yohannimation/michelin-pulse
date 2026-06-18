@@ -117,7 +117,7 @@ export default async function Dashboard() {
     : null;
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-5 px-4 pt-4 pb-6 md:px-6 md:pt-8">
+    <div className="mx-auto flex max-w-2xl flex-col gap-4 px-2 pt-2 pb-6 md:px-5 md:pt-5">
       <MobileTopBar avatar={athlete?.profile} initials={initials} />
 
       <div>

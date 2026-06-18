@@ -11,7 +11,7 @@ export function MobileTopBar({
   initials: string;
 }) {
   return (
-    <div className="sticky top-0 z-40 -mx-4 flex items-center justify-between bg-background/85 px-4 py-3 backdrop-blur md:hidden">
+    <div className="sticky top-0 z-40 -mx-4 flex items-center justify-between bg-background/85 px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 backdrop-blur md:hidden">
       <Image
         src="/michelin-18.svg"
         alt="Michelin"
