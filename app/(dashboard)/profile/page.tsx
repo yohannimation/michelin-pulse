@@ -23,9 +23,6 @@ type IconCmp = React.ComponentType<IconProps>;
 
 const nf = new Intl.NumberFormat("fr-FR");
 
-// Bleu Michelin utilisé pour l'avatar, les badges et les pictos.
-const MICHELIN_BLUE = "#27509B";
-
 export default async function Profile() {
   const data = await getProfileData();
 
@@ -116,10 +113,7 @@ export default async function Profile() {
                 unoptimized
               />
             ) : (
-              <div
-                className="flex size-[88px] shrink-0 items-center justify-center rounded-full text-2xl font-bold text-white"
-                style={{ backgroundColor: MICHELIN_BLUE }}
-              >
+              <div className="flex size-[88px] shrink-0 items-center justify-center rounded-full bg-michelin-blue text-2xl font-bold text-white">
                 {data.initials}
               </div>
             )}
@@ -133,7 +127,7 @@ export default async function Profile() {
                 </p>
               )}
               <span
-                className="mt-2 inline-flex items-center rounded-full bg-michelin-blue-light px-3 py-1 text-sm font-semibold text-michelin-blue-dark"
+                className="mt-2 inline-flex items-center rounded-full bg-michelin-blue-light px-3 py-1 text-sm font-semibold text-michelin-blue"
               >
                 Membre {data.tier}
               </span>
@@ -225,10 +219,7 @@ function MenuRow({ item }: { item: MenuItem }) {
         </span>
       </span>
       {item.badge != null && (
-        <span
-          className="flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-xs font-bold text-white"
-          style={{ backgroundColor: MICHELIN_BLUE }}
-        >
+        <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-michelin-blue px-2 text-xs font-bold text-white">
           {item.badge}
         </span>
       )}

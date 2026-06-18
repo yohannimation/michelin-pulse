@@ -37,7 +37,7 @@ export function CourseEventDetail({
             "absolute top-3 left-3 z-10 inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-semibold",
             event.isRegistered
               ? "bg-michelin-green text-white"
-              : "bg-michelin-yellow text-michelin-midnight"
+              : "bg-michelin-yellow text-michelin-blue"
           )}
         >
           {event.badge}
@@ -110,7 +110,7 @@ export function CourseEventDetail({
           <Button
             size="lg"
             disabled={locked}
-            className="h-11 rounded-xl bg-michelin-yellow px-5 text-michelin-midnight hover:bg-michelin-yellow/90 disabled:opacity-50"
+            className="h-11 rounded-xl bg-michelin-yellow px-5 text-michelin-blue hover:bg-michelin-yellow/90 disabled:opacity-50"
           >
             {event.isRegistered ? "Voir mon inscription" : "S'inscrire à la course"}
           </Button>

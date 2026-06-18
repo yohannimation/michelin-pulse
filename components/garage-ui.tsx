@@ -1,13 +1,13 @@
-import { WEAR_COLOR, type WearTone } from "@/lib/garage";
+import { WEAR_COLOR, type WearTone } from "@/lib/tyre-wear";
 import { cn } from "@/lib/utils";
 
 // Tons de fond/texte des badges d'état, alignés sur WEAR_COLOR.
 // Fonds clairs + textes des couleurs fonctionnelles MICHELIN (charte).
 const BADGE_STYLE: Record<WearTone, { bg: string; fg: string }> = {
-  good: { bg: "#E8F5E5", fg: "#2E7D32" }, // Valide
-  watch: { bg: "#FDECC0", fg: "#8A5A00" }, // Avertissement
-  replace: { bg: "#F4CEC2", fg: "#B71C1C" }, // Danger
-  none: { bg: "#F2F2F2", fg: "#666666" }, // Gris charte
+  good: { bg: "var(--color-michelin-green-light)", fg: "var(--color-michelin-green)" }, // Valide
+  watch: { bg: "var(--color-michelin-warning-light)", fg: "#8A5A00" }, // Avertissement (contraste AA renforcé)
+  replace: { bg: "var(--color-michelin-danger-light)", fg: "var(--color-michelin-danger)" }, // Danger
+  none: { bg: "var(--color-muted)", fg: "var(--color-muted-foreground)" }, // Gris charte
 };
 
 export function StatusBadge({
@@ -90,7 +90,7 @@ export function WearGauge({
       aria-label={`Usure ${pct}%`}
     >
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#F2F2F2" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-muted)" strokeWidth={stroke} />
         <circle
           cx={size / 2}
           cy={size / 2}

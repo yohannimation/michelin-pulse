@@ -47,3 +47,14 @@ export function identifyByCode(code: string): TyreModel {
 export function identifyByFingerprint(seed: string): TyreModel {
   return TYRE_CATALOG[hash(seed) % TYRE_CATALOG.length];
 }
+
+/** Pression conseillée (indicative) par terrain — repère général, pas une consigne constructeur précise. */
+const PRESSURE_ADVICE: Record<string, string> = {
+  Route: "6 à 7 bar (87–101 psi)",
+  Gravel: "2,5 à 3,5 bar (36–51 psi)",
+};
+
+/** Pression conseillée pour un terrain donné, avec repli générique si inconnu. */
+export function pressureAdviceFor(terrain: string): string {
+  return PRESSURE_ADVICE[terrain] ?? "voir l'indication sur le flanc du pneu";
+}

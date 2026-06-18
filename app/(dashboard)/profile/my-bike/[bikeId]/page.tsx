@@ -164,8 +164,7 @@ function NoTyres({ bikeId, bikeKm }: { bikeId: string; bikeKm: number }) {
       </p>
       <Link
         href={`/profile/my-bike/${bikeId}/add`}
-        className="mt-6 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white"
-        style={{ backgroundColor: "#27509B" }}
+        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-michelin-blue px-5 py-2.5 text-sm font-semibold text-white"
       >
         <Scan size={18} color="currentColor" />
         Scanner mes pneus

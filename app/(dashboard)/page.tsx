@@ -31,7 +31,8 @@ function TireGauge({ percent }: { percent: number }) {
           cy="56"
           r={radius}
           fill="none"
-          stroke="rgba(39,80,155,0.45)"
+          stroke="var(--color-michelin-blue)"
+          strokeOpacity={0.45}
           strokeWidth="8"
         />
         <circle
@@ -125,7 +126,7 @@ export default async function Dashboard() {
       </div>
 
       {/* Carte d'état du pneu actif — fond Midnight Blue (charte : "fonds immersifs"). */}
-      <div className="flex items-center gap-4 rounded-2xl bg-michelin-midnight p-5 text-white">
+      <div className="flex items-center gap-4 rounded-2xl bg-michelin-blue p-5 text-white">
         <TireGauge percent={73} />
         <div className="flex flex-1 flex-col gap-2">
           <p className="font-heading text-lg font-bold uppercase">
@@ -134,7 +135,7 @@ export default async function Dashboard() {
           <p className="text-sm text-white/70">
             Bon état — usure normale. Reste ≈ 1 400 km estimés.
           </p>
-          <span className="inline-flex w-fit items-center rounded-full bg-michelin-yellow px-3 py-1 text-xs font-semibold text-michelin-midnight">
+          <span className="inline-flex w-fit items-center rounded-full bg-michelin-yellow px-3 py-1 text-xs font-semibold text-michelin-blue">
             Surveiller dans 3 sorties
           </span>
         </div>

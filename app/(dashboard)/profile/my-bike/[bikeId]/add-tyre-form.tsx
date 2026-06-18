@@ -2,20 +2,22 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Camera, Keyboard, TickCircle } from "iconsax-react";
+import { Camera, Keyboard, ShieldTick, TickCircle } from "iconsax-react";
 
+import { WearGauge } from "@/components/garage-ui";
 import type { TyrePosition } from "@/lib/garage";
 import {
   identifyByCode,
   identifyByFingerprint,
   isValidCode,
   normalizeCode,
+  pressureAdviceFor,
   type TyreModel,
 } from "@/lib/tyres";
+import { wearTone } from "@/lib/tyre-wear";
 import { cn } from "@/lib/utils";
 import { registerTyre } from "./actions";
 
-const BLUE = "#27509B";
 const POSITIONS: TyrePosition[] = ["AVANT", "ARRIÈRE"];
 
 export function AddTyreForm({
@@ -77,10 +79,9 @@ export function AddTyreForm({
                 className={cn(
                   "rounded-xl border px-4 py-3 text-sm font-semibold transition-colors",
                   active
-                    ? "border-transparent text-white"
+                    ? "border-transparent bg-michelin-blue text-white"
                     : "border-border hover:bg-muted"
                 )}
-                style={active ? { backgroundColor: BLUE } : undefined}
               >
                 {p === "AVANT" ? "Avant" : "Arrière"}
                 {taken && (
@@ -120,7 +121,7 @@ export function AddTyreForm({
 
             {method === "photo" ? (
               <label className="mt-3 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-10 text-center transition-colors hover:bg-muted/50">
-                <Camera size={32} color={BLUE} variant="Bulk" />
+                <Camera size={32} className="text-michelin-blue" variant="Bulk" />
                 <span className="font-semibold">Photographier le pneu</span>
                 <span className="text-sm text-muted-foreground">
                   Cadrez le flanc et le marquage MICHELIN
@@ -150,8 +151,7 @@ export function AddTyreForm({
                 <button
                   type="button"
                   onClick={submitCode}
-                  className="mt-3 w-full rounded-xl py-3 text-sm font-semibold text-white"
-                  style={{ backgroundColor: BLUE }}
+                  className="mt-3 w-full rounded-xl bg-michelin-blue py-3 text-sm font-semibold text-white"
                 >
                   Identifier le pneu
                 </button>
@@ -192,9 +192,10 @@ function MethodTab({
       onClick={onClick}
       className={cn(
         "flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors",
-        active ? "border-transparent text-white" : "border-border hover:bg-muted"
+        active
+          ? "border-transparent bg-michelin-blue text-white"
+          : "border-border hover:bg-muted"
       )}
-      style={active ? { backgroundColor: BLUE } : undefined}
     >
       {icon}
       {label}
@@ -217,6 +218,10 @@ function IdentifiedCard({
   position: TyrePosition;
   onReset: () => void;
 }) {
+  const [priorKm, setPriorKm] = useState(0);
+  const pct = Math.min(100, Math.round((priorKm / tyre.lifespanKm) * 100));
+  const remainingKm = Math.max(0, tyre.lifespanKm - priorKm);
+
   return (
     <section className="rounded-2xl p-4 ring-1 ring-foreground/10">
       <div className="flex items-center gap-2 text-sm font-semibold text-michelin-green">
@@ -235,10 +240,7 @@ function IdentifiedCard({
             unoptimized
           />
         ) : (
-          <div
-            className="flex size-[72px] shrink-0 items-center justify-center rounded-xl text-xs font-semibold text-white"
-            style={{ backgroundColor: BLUE }}
-          >
+          <div className="flex size-[72px] shrink-0 items-center justify-center rounded-xl bg-michelin-blue text-xs font-semibold text-white">
             MICHELIN
           </div>
         )}
@@ -253,6 +255,18 @@ function IdentifiedCard({
         </div>
       </div>
 
+      <div className="mt-3 flex items-start gap-2 rounded-xl bg-michelin-green-light px-3 py-2.5 text-sm text-michelin-green">
+        <ShieldTick size={18} color="currentColor" variant="Bold" className="mt-0.5 shrink-0" />
+        <p>
+          Authenticité MICHELIN vérifiée — ce pneu est éligible aux km MICHELIN
+          de votre programme fidélité.
+        </p>
+      </div>
+
+      <p className="mt-2 text-sm text-muted-foreground">
+        Pression conseillée : {pressureAdviceFor(tyre.terrain)}
+      </p>
+
       <form action={registerTyre} className="mt-4 space-y-3">
         <input type="hidden" name="bikeId" value={bikeId} />
         <input type="hidden" name="position" value={position} />
@@ -261,20 +275,25 @@ function IdentifiedCard({
         <input type="hidden" name="lifespanKm" value={tyre.lifespanKm} />
         <input type="hidden" name="bikeKm" value={bikeKm} />
 
-        <label className="block">
-          <span className="text-sm font-medium">Km déjà parcourus sur ce pneu</span>
-          <input
-            type="number"
-            name="priorKm"
-            min={0}
-            defaultValue={0}
-            className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 outline-none focus:border-ring"
-          />
-          <span className="mt-1 block text-xs text-muted-foreground">
-            Laissez 0 si le pneu est neuf. Les km suivants seront comptés
-            automatiquement via Strava.
-          </span>
-        </label>
+        <div className="flex items-center gap-4 rounded-xl bg-muted/40 p-3">
+          <WearGauge pct={pct} tone={wearTone(pct)} size={64} />
+          <label className="flex-1">
+            <span className="text-sm font-medium">Km déjà parcourus sur ce pneu</span>
+            <input
+              type="number"
+              name="priorKm"
+              min={0}
+              value={priorKm}
+              onChange={(e) => setPriorKm(Math.max(0, Number(e.target.value) || 0))}
+              className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2.5 outline-none focus:border-ring"
+            />
+            <span className="mt-1 block text-xs text-muted-foreground">
+              ≈ {remainingKm.toLocaleString("fr-FR")} km de durée de vie restante.
+              Laissez 0 si le pneu est neuf — les km suivants seront comptés
+              automatiquement via Strava.
+            </span>
+          </label>
+        </div>
 
         <div className="flex gap-2">
           <button
@@ -286,8 +305,7 @@ function IdentifiedCard({
           </button>
           <button
             type="submit"
-            className="flex-1 rounded-xl py-3 text-sm font-semibold text-white"
-            style={{ backgroundColor: BLUE }}
+            className="flex-1 rounded-xl bg-michelin-blue py-3 text-sm font-semibold text-white"
           >
             Enregistrer le pneu
           </button>

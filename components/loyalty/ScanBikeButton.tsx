@@ -24,7 +24,7 @@ export function ScanBikeButton({ bikes }: { bikes: GarageBike[] }) {
         className="mt-4 w-full rounded-3xl"
         onClick={() => setIsOpen(true)}
       >
-        <Scan size="32" color="white"/> Scanner le code-barres d&apos;un pneu
+        <Scan size="32" /> Scanner le code-barres d&apos;un pneu
       </Button>
 
       <Modal
