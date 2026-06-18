@@ -2,16 +2,19 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Camera, Keyboard, TickCircle } from "iconsax-react";
+import { Camera, Keyboard, ShieldTick, TickCircle } from "iconsax-react";
 
+import { WearGauge } from "@/components/garage-ui";
 import type { TyrePosition } from "@/lib/garage";
 import {
   identifyByCode,
   identifyByFingerprint,
   isValidCode,
   normalizeCode,
+  pressureAdviceFor,
   type TyreModel,
 } from "@/lib/tyres";
+import { wearTone } from "@/lib/tyre-wear";
 import { cn } from "@/lib/utils";
 import { registerTyre } from "./actions";
 
@@ -215,6 +218,10 @@ function IdentifiedCard({
   position: TyrePosition;
   onReset: () => void;
 }) {
+  const [priorKm, setPriorKm] = useState(0);
+  const pct = Math.min(100, Math.round((priorKm / tyre.lifespanKm) * 100));
+  const remainingKm = Math.max(0, tyre.lifespanKm - priorKm);
+
   return (
     <section className="rounded-2xl p-4 ring-1 ring-foreground/10">
       <div className="flex items-center gap-2 text-sm font-semibold text-michelin-green">
@@ -248,6 +255,18 @@ function IdentifiedCard({
         </div>
       </div>
 
+      <div className="mt-3 flex items-start gap-2 rounded-xl bg-michelin-green-light px-3 py-2.5 text-sm text-michelin-green">
+        <ShieldTick size={18} color="currentColor" variant="Bold" className="mt-0.5 shrink-0" />
+        <p>
+          Authenticité MICHELIN vérifiée — ce pneu est éligible aux km MICHELIN
+          de votre programme fidélité.
+        </p>
+      </div>
+
+      <p className="mt-2 text-sm text-muted-foreground">
+        Pression conseillée : {pressureAdviceFor(tyre.terrain)}
+      </p>
+
       <form action={registerTyre} className="mt-4 space-y-3">
         <input type="hidden" name="bikeId" value={bikeId} />
         <input type="hidden" name="position" value={position} />
@@ -256,20 +275,25 @@ function IdentifiedCard({
         <input type="hidden" name="lifespanKm" value={tyre.lifespanKm} />
         <input type="hidden" name="bikeKm" value={bikeKm} />
 
-        <label className="block">
-          <span className="text-sm font-medium">Km déjà parcourus sur ce pneu</span>
-          <input
-            type="number"
-            name="priorKm"
-            min={0}
-            defaultValue={0}
-            className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 outline-none focus:border-ring"
-          />
-          <span className="mt-1 block text-xs text-muted-foreground">
-            Laissez 0 si le pneu est neuf. Les km suivants seront comptés
-            automatiquement via Strava.
-          </span>
-        </label>
+        <div className="flex items-center gap-4 rounded-xl bg-muted/40 p-3">
+          <WearGauge pct={pct} tone={wearTone(pct)} size={64} />
+          <label className="flex-1">
+            <span className="text-sm font-medium">Km déjà parcourus sur ce pneu</span>
+            <input
+              type="number"
+              name="priorKm"
+              min={0}
+              value={priorKm}
+              onChange={(e) => setPriorKm(Math.max(0, Number(e.target.value) || 0))}
+              className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2.5 outline-none focus:border-ring"
+            />
+            <span className="mt-1 block text-xs text-muted-foreground">
+              ≈ {remainingKm.toLocaleString("fr-FR")} km de durée de vie restante.
+              Laissez 0 si le pneu est neuf — les km suivants seront comptés
+              automatiquement via Strava.
+            </span>
+          </label>
+        </div>
 
         <div className="flex gap-2">
           <button

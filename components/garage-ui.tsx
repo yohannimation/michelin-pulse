@@ -1,4 +1,4 @@
-import { WEAR_COLOR, type WearTone } from "@/lib/garage";
+import { WEAR_COLOR, type WearTone } from "@/lib/tyre-wear";
 import { cn } from "@/lib/utils";
 
 // Tons de fond/texte des badges d'état, alignés sur WEAR_COLOR.

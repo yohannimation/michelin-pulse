@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Camera, GalleryAdd, TickCircle } from "iconsax-react";
+import { Camera, GalleryAdd, ShieldTick, TickCircle } from "iconsax-react";
 
+import { WearGauge } from "@/components/garage-ui";
 import type { GarageBike, TyrePosition } from "@/lib/garage";
-import { identifyByFingerprint, type TyreModel } from "@/lib/tyres";
+import { identifyByFingerprint, pressureAdviceFor, type TyreModel } from "@/lib/tyres";
+import { wearTone } from "@/lib/tyre-wear";
 import { cn } from "@/lib/utils";
 import { registerScannedTyre } from "./actions";
 
@@ -124,13 +126,13 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
                 className="size-full object-cover"
               />
               <ScanCorners tone="white" />
+              <button
+                type="button"
+                onClick={capturePhoto}
+                aria-label="Prendre la photo"
+                className="absolute bottom-4 left-1/2 size-16 -translate-x-1/2 rounded-full border-4 border-white bg-white/10"
+              />
             </div>
-            <button
-              type="button"
-              onClick={capturePhoto}
-              aria-label="Prendre la photo"
-              className="size-16 rounded-full border-4 border-white bg-white/10"
-            />
             <button
               type="button"
               onClick={closeCamera}
@@ -218,6 +220,9 @@ function IdentifiedCard({
   onReset: () => void;
 }) {
   const taken = bike?.tyres.map((t) => t.position) ?? [];
+  const [priorKm, setPriorKm] = useState(0);
+  const pct = Math.min(100, Math.round((priorKm / tyre.lifespanKm) * 100));
+  const remainingKm = Math.max(0, tyre.lifespanKm - priorKm);
 
   return (
     <section className="rounded-2xl p-4 ring-1 ring-foreground/10">
@@ -248,6 +253,18 @@ function IdentifiedCard({
           </p>
         </div>
       </div>
+
+      <div className="mt-3 flex items-start gap-2 rounded-xl bg-michelin-green-light px-3 py-2.5 text-sm text-michelin-green">
+        <ShieldTick size={18} color="currentColor" variant="Bold" className="mt-0.5 shrink-0" />
+        <p>
+          Authenticité MICHELIN vérifiée — ce pneu est éligible aux km MICHELIN
+          de votre programme fidélité.
+        </p>
+      </div>
+
+      <p className="mt-2 text-sm text-muted-foreground">
+        Pression conseillée : {pressureAdviceFor(tyre.terrain)}
+      </p>
 
       {bikes.length === 0 ? (
         <p className="mt-4 text-sm text-muted-foreground">
@@ -307,16 +324,23 @@ function IdentifiedCard({
             </div>
           </div>
 
-          <label className="block">
-            <span className="text-sm font-medium">Km déjà parcourus sur ce pneu</span>
-            <input
-              type="number"
-              name="priorKm"
-              min={0}
-              defaultValue={0}
-              className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 outline-none focus:border-ring"
-            />
-          </label>
+          <div className="flex items-center gap-4 rounded-xl bg-muted/40 p-3">
+            <WearGauge pct={pct} tone={wearTone(pct)} size={64} />
+            <label className="flex-1">
+              <span className="text-sm font-medium">Km déjà parcourus sur ce pneu</span>
+              <input
+                type="number"
+                name="priorKm"
+                min={0}
+                value={priorKm}
+                onChange={(e) => setPriorKm(Math.max(0, Number(e.target.value) || 0))}
+                className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2.5 outline-none focus:border-ring"
+              />
+              <span className="mt-1 block text-xs text-muted-foreground">
+                ≈ {remainingKm.toLocaleString("fr-FR")} km de durée de vie restante
+              </span>
+            </label>
+          </div>
 
           <div className="flex gap-2">
             <button
