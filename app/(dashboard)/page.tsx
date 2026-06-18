@@ -166,12 +166,14 @@ export default async function Dashboard() {
       {/* Actions principales — bouton Principal Groupe + Tertiaire (charte digitale, composants/bouton d'action). */}
       <div className="grid grid-cols-2 gap-3">
         <Button
-          type="button"
+          asChild
           size="lg"
           className="h-12 gap-2 rounded-xl bg-michelin-blue text-white hover:bg-michelin-blue/90"
         >
-          <Scan className="size-5" />
-          Scanner
+          <Link href="/analysis">
+            <Scan className="size-5" />
+            Scanner
+          </Link>
         </Button>
         <Button
           asChild
