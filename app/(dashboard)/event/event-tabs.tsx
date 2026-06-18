@@ -19,7 +19,7 @@ type TabKey = (typeof TABS)[number]["key"];
 
 function EventBadge({ label }: { label: string }) {
   return (
-    <span className="inline-flex w-fit items-center rounded-full bg-michelin-yellow px-3 py-1 text-xs font-semibold text-michelin-midnight">
+    <span className="inline-flex w-fit items-center rounded-full bg-michelin-yellow px-3 py-1 text-xs font-semibold text-michelin-blue">
       {label}
     </span>
   );
@@ -99,7 +99,7 @@ function CourseEventCard({
             ) : (
               <Button
                 disabled={locked}
-                className="bg-michelin-yellow text-michelin-midnight hover:bg-michelin-yellow/90 disabled:opacity-50"
+                className="bg-michelin-yellow text-michelin-blue hover:bg-michelin-yellow/90 disabled:opacity-50"
               >
                 S&apos;inscrire
               </Button>
@@ -123,7 +123,7 @@ function ConcoursEventCard({ event }: { event: ConcoursEvent }) {
         className="overflow-hidden p-0 transition-colors hover:bg-muted/40"
         size="sm"
       >
-        <div className="relative overflow-hidden bg-michelin-midnight p-4 text-white md:p-5">
+        <div className="relative overflow-hidden bg-michelin-blue p-4 text-white md:p-5">
           <Trophy className="absolute -top-2 right-3 size-20 text-white/10" />
           <div className="relative flex items-center gap-2">
             <EventBadge label={event.badge} />

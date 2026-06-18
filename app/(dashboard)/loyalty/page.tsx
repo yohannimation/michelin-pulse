@@ -68,21 +68,22 @@ export default async function Loyalty() {
   }
 
   return (
-    <>
-      <h1>Fidélité</h1>
+    <div className="mx-auto max-w-5xl">
+      <h1 className="font-heading text-2xl font-bold md:text-3xl">Fidélité</h1>
       <div className="grid grid-cols-3 gap-5 py-8">
         <div className="col-span-full xl:col-span-1">
           <div className="flex flex-col gap-5 p-6 rounded-3xl bg-michelin-blue text-white">
             <div className="flex justify-between items-center">
               <Badge>Membre {tier.toUpperCase()}</Badge>
-              <Medal
-                size="24"
-                color="#fce500"
-                variant="Bold"
-              />
+              <Medal size="24" className="text-michelin-yellow" variant="Bold" />
             </div>
             <div>
-              <p><span className="text-5xl font-bold">{michelinKm.toLocaleString()}</span> km</p>
+              <p>
+                <span className="font-heading text-5xl font-bold">
+                  {michelinKm.toLocaleString()}
+                </span>{" "}
+                km
+              </p>
               <p>Parcourus sur pneu Michelin vérifiés.</p>
             </div>
             <div className="flex flex-col gap-2">
@@ -98,7 +99,7 @@ export default async function Loyalty() {
           <p className="mt-1 text-center text-muted-foreground">Vérifiez l&apos;authenticité de vos pneu Michelin pour cumuler vos kilometres</p>
         </div>
         <div className="col-span-full xl:col-span-2">
-          <h2>Vos paliers de réduction</h2>
+          <h2 className="font-heading text-lg font-bold">Vos paliers de réduction</h2>
           <ul className="flex flex-col gap-3 mt-3">
             {
               levels.map((level, index) => (
@@ -107,17 +108,17 @@ export default async function Loyalty() {
                     <ItemMedia variant="icon">
                       {
                         (level.state == "complete") ? (
-                          <TickCircle color="#84bd00" variant="Bold"/>
+                          <TickCircle className="text-michelin-eco" variant="Bold"/>
                         ) :
                         (level.state == "current") ? (
-                          <Medal color="#27509b" variant="Bold"/>
+                          <Medal className="text-michelin-blue" variant="Bold"/>
                         ) : (
-                          <Timer1 color="#E5E5E5" variant="Bold"/>
+                          <Timer1 className="text-border" variant="Bold"/>
                         )
                       }
                     </ItemMedia>
                     <ItemContent>
-                      <ItemTitle className="text-lg font-bold">{level.step}</ItemTitle>
+                      <ItemTitle className="font-heading text-lg font-bold">{level.step}</ItemTitle>
                       <ItemDescription className="capitalize">{level.state}</ItemDescription>
                     </ItemContent>
                     <ItemActions>
@@ -137,6 +138,6 @@ export default async function Loyalty() {
           </ul>
         </div>
       </div>
-    </>
+    </div>
   );
 }

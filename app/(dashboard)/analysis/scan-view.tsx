@@ -9,7 +9,6 @@ import { identifyByFingerprint, type TyreModel } from "@/lib/tyres";
 import { cn } from "@/lib/utils";
 import { registerScannedTyre } from "./actions";
 
-const BLUE = "#27509B";
 const POSITIONS: TyrePosition[] = ["AVANT", "ARRIÈRE"];
 
 export function ScanView({ bikes }: { bikes: GarageBike[] }) {
@@ -124,7 +123,7 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
                 muted
                 className="size-full object-cover"
               />
-              <ScanCorners color="white" />
+              <ScanCorners tone="white" />
             </div>
             <button
               type="button"
@@ -144,8 +143,8 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
         ) : (
           <>
             <div className="relative flex aspect-[4/5] w-full max-w-sm flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-muted/30 px-6 text-center">
-              <ScanCorners color={BLUE} />
-              <Camera size={40} color={BLUE} variant="Bulk" />
+              <ScanCorners tone="blue" />
+              <Camera size={40} className="text-michelin-blue" variant="Bulk" />
               <span className="font-semibold">Cadrez le pneu dans la zone</span>
               <span className="text-sm text-muted-foreground">
                 Centrez le flanc et le marquage MICHELIN avant de prendre la photo
@@ -154,10 +153,9 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
             <button
               type="button"
               onClick={openCamera}
-              className="flex w-full max-w-sm items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white"
-              style={{ backgroundColor: BLUE }}
+              className="flex w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-michelin-blue py-3 text-sm font-semibold text-white"
             >
-              <Camera size={18} color="#fff" variant="Bold" />
+              <Camera size={18} variant="Bold" />
               Ouvrir l&apos;appareil photo
             </button>
             <input
@@ -174,7 +172,7 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
 
       {/* Desktop : pas de caméra, on importe une photo existante. */}
       <label className="hidden cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-12 text-center transition-colors hover:bg-muted/50 md:flex">
-        <GalleryAdd size={36} color={BLUE} variant="Bulk" />
+        <GalleryAdd size={36} className="text-michelin-blue" variant="Bulk" />
         <span className="font-semibold">Importer une photo du pneu</span>
         <span className="text-sm text-muted-foreground">
           Choisissez une image nette du flanc et du marquage MICHELIN
@@ -185,14 +183,15 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
   );
 }
 
-function ScanCorners({ color }: { color: string }) {
+function ScanCorners({ tone }: { tone: "white" | "blue" }) {
   const base = "pointer-events-none absolute size-6 border-2";
+  const color = tone === "white" ? "border-white" : "border-michelin-blue";
   return (
     <>
-      <span className={cn(base, "left-3 top-3 rounded-tl-md border-b-0 border-r-0")} style={{ borderColor: color }} />
-      <span className={cn(base, "right-3 top-3 rounded-tr-md border-b-0 border-l-0")} style={{ borderColor: color }} />
-      <span className={cn(base, "bottom-3 left-3 rounded-bl-md border-r-0 border-t-0")} style={{ borderColor: color }} />
-      <span className={cn(base, "bottom-3 right-3 rounded-br-md border-l-0 border-t-0")} style={{ borderColor: color }} />
+      <span className={cn(base, color, "left-3 top-3 rounded-tl-md border-b-0 border-r-0")} />
+      <span className={cn(base, color, "right-3 top-3 rounded-tr-md border-b-0 border-l-0")} />
+      <span className={cn(base, color, "bottom-3 left-3 rounded-bl-md border-r-0 border-t-0")} />
+      <span className={cn(base, color, "bottom-3 right-3 rounded-br-md border-l-0 border-t-0")} />
     </>
   );
 }
@@ -238,10 +237,7 @@ function IdentifiedCard({
             unoptimized
           />
         ) : (
-          <div
-            className="flex size-[72px] shrink-0 items-center justify-center rounded-xl text-xs font-semibold text-white"
-            style={{ backgroundColor: BLUE }}
-          >
+          <div className="flex size-[72px] shrink-0 items-center justify-center rounded-xl bg-michelin-blue text-xs font-semibold text-white">
             MICHELIN
           </div>
         )}
@@ -294,9 +290,10 @@ function IdentifiedCard({
                     onClick={() => onSelectPosition(p)}
                     className={cn(
                       "rounded-xl border px-4 py-3 text-sm font-semibold transition-colors",
-                      active ? "border-transparent text-white" : "border-border hover:bg-muted"
+                      active
+                        ? "border-transparent bg-michelin-blue text-white"
+                        : "border-border hover:bg-muted"
                     )}
-                    style={active ? { backgroundColor: BLUE } : undefined}
                   >
                     {p === "AVANT" ? "Avant" : "Arrière"}
                     {taken.includes(p) && (
@@ -331,8 +328,7 @@ function IdentifiedCard({
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-xl py-3 text-sm font-semibold text-white"
-              style={{ backgroundColor: BLUE }}
+              className="flex-1 rounded-xl bg-michelin-blue py-3 text-sm font-semibold text-white"
             >
               Enregistrer le pneu
             </button>

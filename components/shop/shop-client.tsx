@@ -34,7 +34,7 @@ function TyreVisual({ tyre, onOpen }: { tyre: ShopTyre; onOpen: () => void }) {
         className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
       />
       {tyre.isNew && (
-        <span className="absolute top-3 left-3 rounded-full bg-michelin-yellow px-2.5 py-1 text-[11px] font-bold tracking-wide text-michelin-blue-dark">
+        <span className="absolute top-3 left-3 rounded-full bg-michelin-yellow px-2.5 py-1 text-[11px] font-bold tracking-wide text-michelin-blue">
           NOUVEAU
         </span>
       )}
@@ -52,7 +52,7 @@ function TyreCard({ tyre }: { tyre: ShopTyre }) {
           {tyre.categories.slice(0, 2).map((c) => (
             <span
               key={c}
-              className="rounded-full bg-michelin-blue-light px-2 py-0.5 text-[11px] font-semibold tracking-wide text-michelin-blue-dark"
+              className="rounded-full bg-michelin-blue-light px-2 py-0.5 text-[11px] font-semibold tracking-wide text-michelin-blue"
             >
               {c}
             </span>
@@ -118,7 +118,7 @@ export function ShopClient() {
   return (
     <div className="space-y-8">
       {/* Suggesteur : bande immersive bleu MICHELIN */}
-      <section className="rounded-2xl bg-michelin-blue-dark p-5 text-white md:p-7">
+      <section className="rounded-2xl bg-michelin-blue p-5 text-white md:p-7">
         <div className="flex items-center gap-2 text-sm font-medium text-michelin-blue-light">
           <Sparkles className="size-4" />
           Suggesteur
@@ -128,13 +128,13 @@ export function ShopClient() {
         </h2>
 
         <div className="relative mt-4">
-          <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-michelin-blue-dark/60" />
+          <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-michelin-blue/60" />
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Rechercher un pneu, un usage…"
-            className="h-12 w-full rounded-xl border-0 bg-white pr-4 pl-12 text-michelin-blue-dark outline-none ring-2 ring-transparent placeholder:text-michelin-blue-dark/50 focus:ring-michelin-yellow"
+            className="h-12 w-full rounded-xl border-0 bg-white pr-4 pl-12 text-michelin-blue outline-none ring-2 ring-transparent placeholder:text-michelin-blue/50 focus:ring-michelin-yellow"
             aria-label="Rechercher un pneu"
           />
         </div>
@@ -204,7 +204,7 @@ function FamilyChip({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
         active
-          ? "bg-michelin-yellow text-michelin-blue-dark"
+          ? "bg-michelin-yellow text-michelin-blue"
           : "bg-white/10 text-white hover:bg-white/20"
       )}
     >
@@ -212,7 +212,7 @@ function FamilyChip({
       <span
         className={cn(
           "text-xs",
-          active ? "text-michelin-blue-dark/70" : "text-michelin-blue-light/70"
+          active ? "text-michelin-blue/70" : "text-michelin-blue-light/70"
         )}
       >
         {count}

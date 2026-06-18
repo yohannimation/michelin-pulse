@@ -68,7 +68,7 @@ export default async function Login({
               key={label}
               className="flex items-center gap-3 px-4 py-4 first:pt-4 last:pb-4"
             >
-              <Icon className="size-5 shrink-0 text-[#2D3F8F]" />
+              <Icon className="size-5 shrink-0 text-michelin-blue" />
               <span className="flex-1 text-[15px] text-foreground">
                 {label}
               </span>

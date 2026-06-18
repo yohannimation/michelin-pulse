@@ -15,7 +15,6 @@ import {
 import { cn } from "@/lib/utils";
 import { registerTyre } from "./actions";
 
-const BLUE = "#27509B";
 const POSITIONS: TyrePosition[] = ["AVANT", "ARRIÈRE"];
 
 export function AddTyreForm({
@@ -77,10 +76,9 @@ export function AddTyreForm({
                 className={cn(
                   "rounded-xl border px-4 py-3 text-sm font-semibold transition-colors",
                   active
-                    ? "border-transparent text-white"
+                    ? "border-transparent bg-michelin-blue text-white"
                     : "border-border hover:bg-muted"
                 )}
-                style={active ? { backgroundColor: BLUE } : undefined}
               >
                 {p === "AVANT" ? "Avant" : "Arrière"}
                 {taken && (
@@ -120,7 +118,7 @@ export function AddTyreForm({
 
             {method === "photo" ? (
               <label className="mt-3 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-10 text-center transition-colors hover:bg-muted/50">
-                <Camera size={32} color={BLUE} variant="Bulk" />
+                <Camera size={32} className="text-michelin-blue" variant="Bulk" />
                 <span className="font-semibold">Photographier le pneu</span>
                 <span className="text-sm text-muted-foreground">
                   Cadrez le flanc et le marquage MICHELIN
@@ -150,8 +148,7 @@ export function AddTyreForm({
                 <button
                   type="button"
                   onClick={submitCode}
-                  className="mt-3 w-full rounded-xl py-3 text-sm font-semibold text-white"
-                  style={{ backgroundColor: BLUE }}
+                  className="mt-3 w-full rounded-xl bg-michelin-blue py-3 text-sm font-semibold text-white"
                 >
                   Identifier le pneu
                 </button>
@@ -192,9 +189,10 @@ function MethodTab({
       onClick={onClick}
       className={cn(
         "flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors",
-        active ? "border-transparent text-white" : "border-border hover:bg-muted"
+        active
+          ? "border-transparent bg-michelin-blue text-white"
+          : "border-border hover:bg-muted"
       )}
-      style={active ? { backgroundColor: BLUE } : undefined}
     >
       {icon}
       {label}
@@ -235,10 +233,7 @@ function IdentifiedCard({
             unoptimized
           />
         ) : (
-          <div
-            className="flex size-[72px] shrink-0 items-center justify-center rounded-xl text-xs font-semibold text-white"
-            style={{ backgroundColor: BLUE }}
-          >
+          <div className="flex size-[72px] shrink-0 items-center justify-center rounded-xl bg-michelin-blue text-xs font-semibold text-white">
             MICHELIN
           </div>
         )}
@@ -286,8 +281,7 @@ function IdentifiedCard({
           </button>
           <button
             type="submit"
-            className="flex-1 rounded-xl py-3 text-sm font-semibold text-white"
-            style={{ backgroundColor: BLUE }}
+            className="flex-1 rounded-xl bg-michelin-blue py-3 text-sm font-semibold text-white"
           >
             Enregistrer le pneu
           </button>

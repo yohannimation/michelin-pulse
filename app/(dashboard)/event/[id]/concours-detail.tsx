@@ -21,7 +21,7 @@ function LeaderboardRow({
         className={cn(
           "flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-bold",
           onPodium
-            ? "bg-michelin-yellow text-michelin-midnight"
+            ? "bg-michelin-yellow text-michelin-blue"
             : "bg-muted text-muted-foreground"
         )}
       >
@@ -71,10 +71,10 @@ export function ConcoursEventDetail({
 
   return (
     <>
-      <div className="rounded-2xl bg-michelin-midnight p-5 text-white">
+      <div className="rounded-2xl bg-michelin-blue p-5 text-white">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="inline-flex w-fit items-center rounded-full bg-michelin-yellow px-3 py-1 text-xs font-semibold text-michelin-midnight">
+            <span className="inline-flex w-fit items-center rounded-full bg-michelin-yellow px-3 py-1 text-xs font-semibold text-michelin-blue">
               {event.badge}
             </span>
             {event.isRegistered && (

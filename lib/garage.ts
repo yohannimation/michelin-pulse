@@ -65,10 +65,10 @@ export type WearTone = "good" | "watch" | "replace" | "none";
 /** Couleur (hex) associée à un niveau d'usure, pour barres et libellés.
  *  Couleurs fonctionnelles de la charte MICHELIN (valide / warning / danger). */
 export const WEAR_COLOR: Record<WearTone, string> = {
-  good: "#2E7D32", // Valide
-  watch: "#F9A825", // Avertissement
-  replace: "#B71C1C", // Danger
-  none: "#999999", // Gray Light 40 (aucun pneu)
+  good: "var(--color-michelin-green)", // Valide
+  watch: "var(--color-michelin-warning)", // Avertissement
+  replace: "var(--color-michelin-danger)", // Danger
+  none: "var(--color-muted-foreground)", // aucun pneu
 };
 
 /** Tonalité d'usure à partir d'un pourcentage. */

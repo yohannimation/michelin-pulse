@@ -26,8 +26,7 @@ export default async function MyGarage() {
         <Link
           href="/analysis/scan"
           aria-label="Ajouter un vélo"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-white sm:px-4"
-          style={{ backgroundColor: "#27509B" }}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-michelin-blue px-3 py-2.5 text-sm font-semibold text-white sm:px-4"
         >
           <Add size={20} color="currentColor" />
           <span className="hidden sm:inline">Vélo</span>
