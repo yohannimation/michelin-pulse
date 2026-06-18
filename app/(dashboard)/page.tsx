@@ -1,7 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
-  Bell,
   Bike,
   History,
   Mountain,
@@ -14,6 +12,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MobileTopBar } from "@/components/mobile-top-bar";
 import { cn } from "@/lib/utils";
 import { readSession } from "@/lib/session";
 import { getMonthlyCyclingStats, type CyclingStats } from "@/lib/strava";
@@ -118,41 +117,7 @@ export default async function Dashboard() {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5 px-4 pt-4 pb-6 md:px-6 md:pt-8">
-      {/* Barre du haut mobile — le desktop a déjà son propre header (SiteHeader). */}
-      <div className="flex items-center justify-between md:hidden">
-        <Image
-          src="/michelin-18.svg"
-          alt="Michelin"
-          width={120}
-          height={40}
-          className="h-7 w-auto"
-          unoptimized
-          priority
-        />
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="flex size-9 items-center justify-center rounded-full bg-muted text-foreground"
-          >
-            <Bell className="size-4" />
-          </button>
-          {athlete?.profile ? (
-            <Image
-              src={athlete.profile}
-              alt=""
-              width={36}
-              height={36}
-              className="size-9 rounded-full object-cover ring-1 ring-foreground/10"
-              unoptimized
-            />
-          ) : (
-            <div className="flex size-9 items-center justify-center rounded-full bg-michelin-blue text-sm font-semibold text-white">
-              {initials}
-            </div>
-          )}
-        </div>
-      </div>
+      <MobileTopBar avatar={athlete?.profile} initials={initials} />
 
       <div>
         <p className="text-sm text-muted-foreground">Bonjour {firstName}</p>
