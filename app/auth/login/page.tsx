@@ -34,7 +34,7 @@ export default async function Login({
 
   return (
     <div className="flex min-h-dvh justify-center bg-background">
-      <div className="flex min-h-dvh w-[30vw] flex-col">
+      <div className="flex min-h-dvh w-full max-w-sm flex-col">
       <main className="flex flex-1 flex-col justify-center px-6">
         {/* Brand lockup */}
         <div className="flex items-center justify-center gap-4">
@@ -55,7 +55,6 @@ export default async function Login({
           </div>
         </div>
 
-        {/* Heading */}
         <h2 className="mt-7 text-center text-3xl font-bold tracking-tight">
           Connectez Strava
         </h2>
@@ -63,7 +62,6 @@ export default async function Login({
           On lit vos sorties pour personnaliser la recommandation.
         </p>
 
-        {/* Benefits card */}
         <Card className="mt-8 gap-0 divide-y divide-border p-0">
           {benefits.map(({ icon: Icon, label }) => (
             <div
@@ -80,7 +78,6 @@ export default async function Login({
         </Card>
       </main>
 
-      {/* Footer / CTA */}
       <footer className="px-5 pt-4 pb-6">
         {errorMessage && (
           <p className="mb-3 rounded-lg bg-destructive/10 px-4 py-2.5 text-center text-sm text-destructive">
