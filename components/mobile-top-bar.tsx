@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Bell } from "lucide-react";
 
 /** Barre du haut mobile (logo + notifications + avatar) — le desktop a déjà son propre header (SiteHeader). */
@@ -28,20 +29,22 @@ export function MobileTopBar({
         >
           <Bell className="size-4" />
         </button>
-        {avatar ? (
-          <Image
-            src={avatar}
-            alt=""
-            width={36}
-            height={36}
-            className="size-9 rounded-full object-cover ring-1 ring-foreground/10"
-            unoptimized
-          />
-        ) : (
-          <div className="flex size-9 items-center justify-center rounded-full bg-michelin-blue text-sm font-semibold text-white">
-            {initials}
-          </div>
-        )}
+        <Link href="/profile" aria-label="Mon profil">
+          {avatar ? (
+            <Image
+              src={avatar}
+              alt=""
+              width={36}
+              height={36}
+              className="size-9 rounded-full object-cover ring-1 ring-foreground/10"
+              unoptimized
+            />
+          ) : (
+            <div className="flex size-9 items-center justify-center rounded-full bg-michelin-blue text-sm font-semibold text-white">
+              {initials}
+            </div>
+          )}
+        </Link>
       </div>
     </div>
   );
