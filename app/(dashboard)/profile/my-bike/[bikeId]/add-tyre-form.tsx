@@ -219,7 +219,7 @@ function IdentifiedCard({
 }) {
   return (
     <section className="rounded-2xl p-4 ring-1 ring-foreground/10">
-      <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: "#15803D" }}>
+      <div className="flex items-center gap-2 text-sm font-semibold text-michelin-green">
         <TickCircle size={20} color="currentColor" variant="Bold" />
         Pneu identifié
       </div>

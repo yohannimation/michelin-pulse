@@ -133,8 +133,7 @@ export default async function Profile() {
                 </p>
               )}
               <span
-                className="mt-2 inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold"
-                style={{ backgroundColor: "#F7EEC3", color: "#7A6516" }}
+                className="mt-2 inline-flex items-center rounded-full bg-michelin-blue-light px-3 py-1 text-sm font-semibold text-michelin-blue-dark"
               >
                 Membre {data.tier}
               </span>
@@ -215,8 +214,7 @@ function MenuRow({ item }: { item: MenuItem }) {
       )}
     >
       <span
-        className="flex size-11 shrink-0 items-center justify-center rounded-xl"
-        style={{ backgroundColor: "#E8F1FC", color: MICHELIN_BLUE }}
+        className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-michelin-blue-light text-michelin-blue"
       >
         <Icon size={24} color="currentColor" variant="Bold" />
       </span>

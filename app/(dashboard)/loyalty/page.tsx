@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Item,
   ItemActions,
@@ -9,7 +8,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { Progress } from "@/components/ui/progress";
-import { Medal, Scanner, TickCircle, Timer1 } from "iconsax-react";
+import { Medal, TickCircle, Timer1 } from "iconsax-react";
 import { getProfileData } from "@/lib/profile";
 import { getGarage } from "@/lib/garage";
 import { ScanBikeButton } from "@/components/loyalty/ScanBikeButton";
@@ -72,8 +71,8 @@ export default async function Loyalty() {
     <>
       <h1>Fidélité</h1>
       <div className="grid grid-cols-3 gap-5 py-8">
-        <div className="col-span-full xl:col-span-[1]">
-          <div className="flex flex-col gap-5 p-6 rounded-3xl bg-[#27509b] text-white">
+        <div className="col-span-full xl:col-span-1">
+          <div className="flex flex-col gap-5 p-6 rounded-3xl bg-michelin-blue text-white">
             <div className="flex justify-between items-center">
               <Badge>Membre {tier.toUpperCase()}</Badge>
               <Medal
@@ -96,15 +95,15 @@ export default async function Loyalty() {
           </div>
 
           <ScanBikeButton bikes={bikes} />
-          <p className="mt-1 text-center text-muted-foreground">Vérifiez l'authenticité de vos pneu Michelin pour cumuler vos kilometres</p>
+          <p className="mt-1 text-center text-muted-foreground">Vérifiez l&apos;authenticité de vos pneu Michelin pour cumuler vos kilometres</p>
         </div>
-        <div className="col-span-full xl:col-span-[2]">
+        <div className="col-span-full xl:col-span-2">
           <h2>Vos paliers de réduction</h2>
           <ul className="flex flex-col gap-3 mt-3">
             {
               levels.map((level, index) => (
                 <li key={index}>
-                  <Item variant={"outline"} className={level.state === "current" ? "border-2 border-[#27509b]" : ""}>
+                  <Item variant={"outline"} className={level.state === "current" ? "border-2 border-michelin-blue" : ""}>
                     <ItemMedia variant="icon">
                       {
                         (level.state == "complete") ? (

@@ -18,7 +18,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div
         className={cn(
-          "relative w-full max-w-md overflow-hidden rounded-3xl bg-white p-6 shadow-xl",
+          "relative w-full max-w-md overflow-hidden rounded-3xl bg-card p-6 shadow-xl",
           "dark:bg-zinc-900 dark:text-white"
         )}
       >
@@ -26,7 +26,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           <h3 className="text-xl font-bold">{title}</h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-1 rounded-full hover:bg-muted dark:hover:bg-zinc-800 transition-colors"
           >
             <X size={20} />
           </button>

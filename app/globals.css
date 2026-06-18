@@ -45,10 +45,17 @@
   --color-michelin-blue-dark: #00205b; /* Bleu foncé Michelin (secondaire) */
   --color-michelin-midnight: #000c34; /* Midnight Blue — fonds immersifs */
   --color-michelin-blue-light: #d4e7fa; /* Primary blue Light 01 — applats clairs */
-  --color-michelin-yellow: #fce500; /* Jaune Michelin — accentuation */
-  --color-michelin-green: #2e7d32; /* Valide */
-  --color-michelin-danger: #b71c1c; /* Danger ou erreur */
+  --color-michelin-yellow: #fce500; /* Jaune Michelin — accentuation (commercial) */
   --color-michelin-gray: #53565a; /* Gris responsable (secondaire) */
+
+  /* Couleurs complémentaires / particulières (alertes & indicateurs). */
+  --color-michelin-eco: #84bd00; /* Vert généreux — éco-responsabilité */
+  --color-michelin-green: #2e7d32; /* Valide */
+  --color-michelin-green-light: #e8f5e5; /* Valide — fond clair */
+  --color-michelin-warning: #f9a825; /* Avertissement */
+  --color-michelin-warning-light: #fdecc0; /* Avertissement — fond clair */
+  --color-michelin-danger: #b71c1c; /* Danger ou erreur */
+  --color-michelin-danger-light: #f4cec2; /* Danger — fond clair */
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -60,24 +67,26 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  /* Fonctionnelles : fond blanc, texte noir, gris charte pour applats. */
+  --background: #ffffff;
+  --foreground: #1a1a1a; /* Gray Dark 80 — texte principal */
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  /* Action principale Groupe = Bleu MICHELIN. */
+  --primary: #27509b;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f2f2; /* Gray Light 05 */
+  --secondary-foreground: #1a1a1a;
+  --muted: #f2f2f2; /* Gray Light 05 — applats */
+  --muted-foreground: #666666; /* Gray Dark 40 — texte secondaire */
+  --accent: #f2f2f2;
+  --accent-foreground: #1a1a1a;
+  --destructive: #b71c1c; /* Danger ou erreur */
+  --border: #e5e5e5; /* Gray Light 10 */
+  --input: #e5e5e5;
+  --ring: #27509b; /* Focus = Bleu MICHELIN */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

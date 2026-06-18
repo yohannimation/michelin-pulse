@@ -103,7 +103,7 @@ export function SiteHeader({ avatar }: { avatar?: string }) {
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "flex items-center gap-2 rounded-lg px-4 py-2 text-lg font-medium transition-colors",
-                    active ? "text-michelin-blue" : "text-[#0A0A0A] hover:opacity-70"
+                    active ? "text-michelin-blue" : "text-foreground hover:opacity-70"
                   )}
                 >
                   {item.label}
