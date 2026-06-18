@@ -143,10 +143,15 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Garde-fou : aucun débordement horizontal ne dépasse jamais le viewport.
+       `clip` (et non `hidden`) ne crée pas de conteneur de défilement, donc
+       ne casse pas les éléments `sticky`. */
+    overflow-x: clip;
   }
   /* Corps de texte : Noto Sans (recommandé pour le web). */
   html {
     @apply font-sans;
+    overflow-x: clip;
   }
   /* Titres : MICHELIN Unit Titling.
      H1/H2 en Bold, H3-H6 en Regular (déclinables en Light/Bold via les classes

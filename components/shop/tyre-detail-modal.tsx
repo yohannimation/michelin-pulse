@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   BadgePercent,
   Check,
@@ -75,9 +76,13 @@ export function TyreDetailModal({
     setSelectedId(pts[0]?.id ?? null);
   }
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  // Portail vers <body> : la modale échappe à tout conteneur (overflow,
+  // transform…) et reste strictement dans le viewport.
+  return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4"
+      className="fixed inset-0 z-[100] flex items-end justify-center overflow-x-hidden bg-black/40 p-0 sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-label={`Commander le pneu MICHELIN ${tyre.name}`}
@@ -201,7 +206,8 @@ export function TyreDetailModal({
           </Footer>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
