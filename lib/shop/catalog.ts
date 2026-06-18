@@ -589,6 +589,35 @@ export function productUrl(tyre: ShopTyre): string {
   return `https://www.michelin.fr/bicycle/tyres/${tyre.slug}`;
 }
 
+function hash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+// Prix de base par niveau de gamme (€). Simulé : MICHELIN ne publie pas de
+// tarif sur ce catalogue, on en dérive un déterministe pour le tunnel d'achat.
+const GAMME_BASE_PRICE: Record<TyreGamme, number> = {
+  Racing: 59.9,
+  Competition: 49.9,
+  Performance: 39.9,
+  Access: 24.9,
+};
+
+/** Prix unitaire simulé d'un pneu, en euros (déterministe). */
+export function priceOf(tyre: ShopTyre): number {
+  const base = tyre.gamme ? GAMME_BASE_PRICE[tyre.gamme] : 34.9;
+  return base + (hash(tyre.slug) % 5) * 5;
+}
+
+/** Formate un montant en euros (ex. « 54,90 € »). */
+export function formatPrice(amount: number): string {
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(amount);
+}
+
 /** 3 pneus mis en avant en tête de boutique. */
 export const FEATURED_SLUGS = [
   "michelin-power-cup-competition-line",

@@ -10,15 +10,22 @@ import {
   BIKE_FAMILIES,
   SHOP_CATALOG,
   familiesOf,
+  formatPrice,
+  priceOf,
   type BikeFamily,
   type ShopTyre,
 } from "@/lib/shop/catalog";
 import { TyreDetailModal } from "@/components/shop/tyre-detail-modal";
 
-/** Visuel produit (photo locale dans /public/tyres). */
-function TyreVisual({ tyre }: { tyre: ShopTyre }) {
+/** Visuel produit (photo locale dans /public/tyres), cliquable. */
+function TyreVisual({ tyre, onOpen }: { tyre: ShopTyre; onOpen: () => void }) {
   return (
-    <div className="relative aspect-4/3 overflow-hidden rounded-t-xl bg-michelin-blue-light/40">
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label={`Voir le détail du pneu MICHELIN ${tyre.name}`}
+      className="relative block aspect-4/3 w-full cursor-pointer overflow-hidden rounded-t-xl bg-michelin-blue-light/40"
+    >
       <Image
         src={tyre.image}
         alt={`MICHELIN ${tyre.name}`}
@@ -31,7 +38,7 @@ function TyreVisual({ tyre }: { tyre: ShopTyre }) {
           NOUVEAU
         </span>
       )}
-    </div>
+    </button>
   );
 }
 
@@ -39,7 +46,7 @@ function TyreCard({ tyre }: { tyre: ShopTyre }) {
   const [open, setOpen] = useState(false);
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl bg-card text-card-foreground ring-1 ring-foreground/10 transition-shadow hover:shadow-lg">
-      <TyreVisual tyre={tyre} />
+      <TyreVisual tyre={tyre} onOpen={() => setOpen(true)} />
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex flex-wrap gap-1.5">
           {tyre.categories.slice(0, 2).map((c) => (
@@ -60,12 +67,14 @@ function TyreCard({ tyre }: { tyre: ShopTyre }) {
           MICHELIN {tyre.name}
         </h3>
         <p className="line-clamp-2 text-sm text-muted-foreground">{tyre.claim}</p>
-        <div className="mt-auto pt-2">
+        <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+          <span className="font-heading text-lg font-bold text-michelin-blue">
+            {formatPrice(priceOf(tyre))}
+          </span>
           <Button
             type="button"
             variant="outline"
             size="sm"
-            className="w-full"
             onClick={() => setOpen(true)}
           >
             Voir les détails

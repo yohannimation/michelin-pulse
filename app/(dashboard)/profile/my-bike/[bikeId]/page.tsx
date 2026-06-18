@@ -82,8 +82,7 @@ export default async function BikeDetail({
 
           {rearWearsFaster && (
             <div
-              className="mt-4 flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm"
-              style={{ backgroundColor: "#FEF6E0", color: "#7A6516" }}
+              className="mt-4 flex items-start gap-2.5 rounded-xl bg-michelin-warning-light px-4 py-3 text-sm text-foreground"
             >
               <InfoCircle size={18} color="currentColor" className="mt-0.5 shrink-0" />
               <p>
@@ -123,7 +122,7 @@ function TyreCard({ tyre, bikeId }: { tyre: Tyre; bikeId: string }) {
             </div>
             <div>
               <p className="text-muted-foreground">Vie restante</p>
-              <p className="font-semibold" style={{ color: "#16A34A" }}>
+              <p className="font-semibold text-michelin-green">
                 ≈ {tyre.remainingKm.toLocaleString("fr-FR")} km
               </p>
             </div>

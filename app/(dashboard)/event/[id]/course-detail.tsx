@@ -89,8 +89,7 @@ export function CourseEventDetail({
 
       {locked && (
         <div
-          className="flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm"
-          style={{ backgroundColor: "#FEF6E0", color: "#7A6516" }}
+          className="flex items-start gap-2.5 rounded-xl bg-michelin-warning-light px-4 py-3 text-sm text-foreground"
         >
           <Info size={18} className="mt-0.5 shrink-0" />
           <p>

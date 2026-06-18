@@ -72,7 +72,7 @@ export default async function Login({
               <span className="flex-1 text-[15px] text-foreground">
                 {label}
               </span>
-              <Check className="size-5 shrink-0 text-green-600" />
+              <Check className="size-5 shrink-0 text-michelin-green" />
             </div>
           ))}
         </Card>

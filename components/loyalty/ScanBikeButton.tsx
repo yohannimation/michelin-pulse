@@ -24,7 +24,7 @@ export function ScanBikeButton({ bikes }: { bikes: GarageBike[] }) {
         className="mt-4 w-full rounded-3xl"
         onClick={() => setIsOpen(true)}
       >
-        <Scan size="32" color="white"/> Scanner le code-barres d'un pneu
+        <Scan size="32" color="white"/> Scanner le code-barres d&apos;un pneu
       </Button>
 
       <Modal
@@ -42,18 +42,18 @@ export function ScanBikeButton({ bikes }: { bikes: GarageBike[] }) {
               <button
                 key={bike.id}
                 onClick={() => handleBikeSelect(bike.id)}
-                className="flex items-center justify-between p-4 rounded-2xl border-2 border-zinc-100 hover:border-[#27509b] transition-all text-left group"
+                className="flex items-center justify-between p-4 rounded-2xl border-2 border-border hover:border-michelin-blue transition-all text-left group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-zinc-100 group-hover:bg-blue-50">
-                    <Bike size={20} className="text-zinc-500 group-hover:text-[#27509b]" />
+                  <div className="p-2 rounded-full bg-muted group-hover:bg-michelin-blue-light">
+                    <Bike size={20} className="text-muted-foreground group-hover:text-michelin-blue" />
                   </div>
                   <div>
                     <p className="font-bold">{bike.name}</p>
                     <p className="text-xs text-muted-foreground">{bike.type || "Vélo"}</p>
                   </div>
                 </div>
-                <Badge variant="outline" className="group-hover:bg-[#27509b] group-hover:text-white transition-colors">
+                <Badge variant="outline" className="group-hover:bg-michelin-blue group-hover:text-white transition-colors">
                   Choisir
                 </Badge>
               </button>
