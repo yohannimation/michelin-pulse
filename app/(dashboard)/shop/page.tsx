@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { MobileTopBar } from "@/components/mobile-top-bar";
 import { ShopClient } from "@/components/shop/shop-client";
 import { readSession } from "@/lib/session";
@@ -16,7 +17,9 @@ export default async function Shop() {
       <p className="mt-4 text-sm text-muted-foreground">
         Le catalogue pneus vélo MICHELIN, choisi pour votre monture.
       </p>
-      <ShopClient />
+      <Suspense>
+        <ShopClient />
+      </Suspense>
     </div>
   );
 }

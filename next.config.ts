@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
+  // Le venv Python (scan IA) contient des symlinks Homebrew hors du projet :
+  // le traçage de fichiers ne doit pas tenter de les suivre.
+  outputFileTracingExcludes: {
+    '/*': ['./.venv/**/*'],
+  },
 };
 
 export default nextConfig;
