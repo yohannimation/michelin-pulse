@@ -45,7 +45,6 @@ function TyreVisual({ tyre, onOpen }: { tyre: ShopTyre; onOpen: () => void }) {
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
         priority={true}
-        style={{ width: 'auto', height: 'auto' }}
       />
       {tyre.isNew && (
         <span className="absolute top-3 left-3 rounded-full bg-michelin-yellow px-2.5 py-1 text-[11px] font-bold tracking-wide text-michelin-blue">
@@ -117,7 +116,6 @@ function ScannedTyreHero({ tyre }: { tyre: ShopTyre }) {
             sizes="224px"
             className="object-contain p-5"
             priority={true}
-            style={{ width: 'auto', height: 'auto' }}
           />
           {tyre.isNew && (
             <span className="absolute top-3 left-3 rounded-full bg-michelin-yellow px-2.5 py-1 text-[11px] font-bold tracking-wide text-michelin-blue">
