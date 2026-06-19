@@ -1,14 +1,15 @@
-// Reconnaissance d'image réelle d'un pneu, par comparaison avec les visuels
-// du catalogue boutique (cf. scripts/identify_tyre.py — ORB, pas d'IA ni de
-// clé API). Module serveur uniquement (spawn un process Python + accès disque).
+// Vérification rapide « est-ce que cette photo ressemble à un pneu » avant
+// l'identification simulée (cf. scripts/looks_like_tyre.py). On a essayé une
+// vraie reconnaissance (OCR + similarité visuelle avec le catalogue), mais
+// trop peu fiable sur des photos réelles : un pneu peut être identifié à tort.
+// On garde donc juste ce garde-fou, puis lib/tyres.ts choisit un modèle du
+// catalogue de façon déterministe (pas une vraie reconnaissance de modèle).
 
 import { execFile } from "node:child_process";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
-
-import { SHOP_CATALOG, type ShopTyre } from "@/lib/shop/catalog";
 
 const execFileAsync = promisify(execFile);
 
@@ -17,39 +18,29 @@ const execFileAsync = promisify(execFile);
 // fichiers de Next.js tente de résoudre statiquement et qui casse sur le
 // symlink Homebrew du venv (qui sort de la racine du projet).
 const PYTHON_BIN = "./.venv/bin/python3";
-const SCRIPT_PATH = "./scripts/identify_tyre.py";
+const SCRIPT_PATH = "./scripts/looks_like_tyre.py";
 
-type IdentifyResult = { slug: string | null };
+type LooksLikeTyreResult = { isTyre: boolean };
 
 /**
- * Identifie un pneu MICHELIN à partir d'une photo, en le comparant aux
- * visuels du catalogue boutique. Renvoie `null` si rien d'assez proche n'est
- * trouvé (mieux vaut ne pas reconnaître que de désigner le mauvais pneu).
+ * Renvoie `true` si la photo a une chance raisonnable de montrer un pneu
+ * (dominante de noir/caoutchouc). En cas de souci (script ou venv
+ * indisponible), on ne bloque pas le scan : on laisse passer plutôt que de
+ * planter la page.
  */
-export async function identifyTyreFromPhoto(file: File): Promise<ShopTyre | null> {
+export async function looksLikeTyre(file: File): Promise<boolean> {
   const dir = await mkdtemp(path.join(tmpdir(), "tyre-scan-"));
   const photoPath = path.join(dir, "photo");
-  const catalogPath = path.join(dir, "catalog.json");
 
   try {
     await writeFile(photoPath, Buffer.from(await file.arrayBuffer()));
-    const catalog = SHOP_CATALOG.map((t) => ({
-      slug: t.slug,
-      name: t.name,
-      path: path.join(process.cwd(), "public", t.image),
-    }));
-    await writeFile(catalogPath, JSON.stringify(catalog));
-
-    const { stdout } = await execFileAsync(PYTHON_BIN, [SCRIPT_PATH, photoPath, catalogPath], {
+    const { stdout } = await execFileAsync(PYTHON_BIN, [SCRIPT_PATH, photoPath], {
       cwd: process.cwd(),
     });
-    const result = JSON.parse(stdout) as IdentifyResult;
-    if (!result.slug) return null;
-    return SHOP_CATALOG.find((t) => t.slug === result.slug) ?? null;
+    const result = JSON.parse(stdout) as LooksLikeTyreResult;
+    return result.isTyre;
   } catch {
-    // Script ou venv indisponible : on ne bloque pas le scan, on retombe sur
-    // « non reconnu » plutôt que de planter la page.
-    return null;
+    return true;
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
