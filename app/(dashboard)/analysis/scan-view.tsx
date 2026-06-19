@@ -2,20 +2,32 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Camera, GalleryAdd, ShieldTick, TickCircle } from "iconsax-react";
+import Link from "next/link";
+import {
+  Camera,
+  GalleryAdd,
+  InfoCircle,
+  ShieldTick,
+  ShoppingCart,
+  TickCircle,
+} from "iconsax-react";
 
 import { WearGauge } from "@/components/garage-ui";
 import type { GarageBike, TyrePosition } from "@/lib/garage";
-import { identifyByFingerprint, pressureAdviceFor, type TyreModel } from "@/lib/tyres";
+import { detectWearPct, pressureAdviceFor, type TyreModel } from "@/lib/tyres";
 import { wearTone } from "@/lib/tyre-wear";
 import { cn } from "@/lib/utils";
-import { registerScannedTyre } from "./actions";
+import { identifyScannedTyre, registerScannedTyre } from "./actions";
 
 const POSITIONS: TyrePosition[] = ["AVANT", "ARRIÈRE"];
+
+type ScanStatus = "idle" | "loading" | "found" | "not-found";
 
 export function ScanView({ bikes }: { bikes: GarageBike[] }) {
   const [preview, setPreview] = useState<string | null>(null);
   const [tyre, setTyre] = useState<TyreModel | null>(null);
+  const [wearPct, setWearPct] = useState(0);
+  const [status, setStatus] = useState<ScanStatus>("idle");
   const [bikeId, setBikeId] = useState<string | undefined>(bikes[0]?.id);
   const [position, setPosition] = useState<TyrePosition>("AVANT");
   const [cameraOpen, setCameraOpen] = useState(false);
@@ -39,15 +51,28 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
     };
   }, []);
 
-  function handleFile(file: File) {
+  async function handleFile(file: File) {
     setPreview(URL.createObjectURL(file));
-    // Identification simulée à partir d'une empreinte du fichier.
-    setTyre(identifyByFingerprint(`${file.name}-${file.size}`));
+    setTyre(null);
+    setStatus("loading");
+    // Usure simulée (pas de vraie analyse de la profondeur de la gomme).
+    setWearPct(detectWearPct(`${file.name}-${file.size}`));
+
+    const formData = new FormData();
+    formData.append("photo", file);
+    const result = await identifyScannedTyre(formData);
+
+    if (result) {
+      setTyre(result);
+      setStatus("found");
+    } else {
+      setStatus("not-found");
+    }
   }
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) handleFile(file);
+    if (file) void handleFile(file);
   }
 
   async function openCamera() {
@@ -82,7 +107,7 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
     canvas.toBlob(
       (blob) => {
         if (!blob) return;
-        handleFile(new File([blob], `pneu-${Date.now()}.jpg`, { type: "image/jpeg" }));
+        void handleFile(new File([blob], `pneu-${Date.now()}.jpg`, { type: "image/jpeg" }));
         closeCamera();
       },
       "image/jpeg",
@@ -93,12 +118,23 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
   function reset() {
     setPreview(null);
     setTyre(null);
+    setWearPct(0);
+    setStatus("idle");
   }
 
-  if (tyre) {
+  if (status === "loading") {
+    return <LoadingCard preview={preview} />;
+  }
+
+  if (status === "not-found") {
+    return <NotFoundCard preview={preview} onRetry={reset} />;
+  }
+
+  if (status === "found" && tyre) {
     return (
       <IdentifiedCard
         tyre={tyre}
+        wearPct={wearPct}
         preview={preview}
         bikes={bikes}
         bikeId={bikeId}
@@ -185,6 +221,69 @@ export function ScanView({ bikes }: { bikes: GarageBike[] }) {
   );
 }
 
+function LoadingCard({ preview }: { preview: string | null }) {
+  return (
+    <section className="flex flex-col items-center gap-4 rounded-2xl p-6 text-center ring-1 ring-foreground/10">
+      {preview && (
+        <Image
+          src={preview}
+          alt=""
+          width={160}
+          height={160}
+          className="size-40 rounded-xl object-cover ring-1 ring-foreground/10"
+          unoptimized
+        />
+      )}
+      <div className="flex items-center gap-2 text-sm font-semibold text-michelin-blue">
+        <span className="size-4 animate-spin rounded-full border-2 border-michelin-blue/30 border-t-michelin-blue" />
+        Analyse de la photo en cours…
+      </div>
+      <p className="text-sm text-muted-foreground">
+        Comparaison avec les pneus MICHELIN de la boutique.
+      </p>
+    </section>
+  );
+}
+
+function NotFoundCard({
+  preview,
+  onRetry,
+}: {
+  preview: string | null;
+  onRetry: () => void;
+}) {
+  return (
+    <section className="flex flex-col items-center gap-4 rounded-2xl p-6 text-center ring-1 ring-foreground/10">
+      {preview && (
+        <Image
+          src={preview}
+          alt=""
+          width={160}
+          height={160}
+          className="size-40 rounded-xl object-cover ring-1 ring-foreground/10"
+          unoptimized
+        />
+      )}
+      <div className="flex items-center gap-2 text-sm font-semibold text-destructive">
+        <InfoCircle size={20} color="currentColor" variant="Bold" />
+        Pneu non reconnu
+      </div>
+      <p className="text-sm text-muted-foreground">
+        Aucun pneu MICHELIN de la boutique ne correspond à cette photo.
+        Reprenez-la en cadrant bien le flanc et le marquage, avec un bon
+        éclairage.
+      </p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="rounded-xl bg-michelin-blue px-5 py-2.5 text-sm font-semibold text-white"
+      >
+        Reprendre une photo
+      </button>
+    </section>
+  );
+}
+
 function ScanCorners({ tone }: { tone: "white" | "blue" }) {
   const base = "pointer-events-none absolute size-6 border-2";
   const color = tone === "white" ? "border-white" : "border-michelin-blue";
@@ -200,6 +299,7 @@ function ScanCorners({ tone }: { tone: "white" | "blue" }) {
 
 function IdentifiedCard({
   tyre,
+  wearPct,
   preview,
   bikes,
   bikeId,
@@ -210,6 +310,7 @@ function IdentifiedCard({
   onReset,
 }: {
   tyre: TyreModel;
+  wearPct: number;
   preview: string | null;
   bikes: GarageBike[];
   bikeId: string | undefined;
@@ -220,7 +321,9 @@ function IdentifiedCard({
   onReset: () => void;
 }) {
   const taken = bike?.tyres.map((t) => t.position) ?? [];
-  const [priorKm, setPriorKm] = useState(0);
+  const [priorKm, setPriorKm] = useState(
+    Math.round((tyre.lifespanKm * wearPct) / 100)
+  );
   const pct = Math.min(100, Math.round((priorKm / tyre.lifespanKm) * 100));
   const remainingKm = Math.max(0, tyre.lifespanKm - priorKm);
 
@@ -236,13 +339,13 @@ function IdentifiedCard({
           <Image
             src={preview}
             alt=""
-            width={72}
-            height={72}
-            className="size-[72px] shrink-0 rounded-xl object-cover ring-1 ring-foreground/10"
+            width={96}
+            height={96}
+            className="size-24 shrink-0 rounded-xl object-cover ring-1 ring-foreground/10"
             unoptimized
           />
         ) : (
-          <div className="flex size-[72px] shrink-0 items-center justify-center rounded-xl bg-michelin-blue text-xs font-semibold text-white">
+          <div className="flex size-24 shrink-0 items-center justify-center rounded-xl bg-michelin-blue text-xs font-semibold text-white">
             MICHELIN
           </div>
         )}
@@ -265,6 +368,14 @@ function IdentifiedCard({
       <p className="mt-2 text-sm text-muted-foreground">
         Pression conseillée : {pressureAdviceFor(tyre.terrain)}
       </p>
+
+      <Link
+        href={`/shop?scanned=${tyre.slug}`}
+        className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-michelin-blue px-4 py-2.5 text-sm font-semibold text-michelin-blue transition-colors hover:bg-michelin-blue-light/40"
+      >
+        <ShoppingCart size={18} color="currentColor" variant="Bold" />
+        Voir ce pneu dans la boutique
+      </Link>
 
       {bikes.length === 0 ? (
         <p className="mt-4 text-sm text-muted-foreground">
@@ -337,7 +448,8 @@ function IdentifiedCard({
                 className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2.5 outline-none focus:border-ring"
               />
               <span className="mt-1 block text-xs text-muted-foreground">
-                ≈ {remainingKm.toLocaleString("fr-FR")} km de durée de vie restante
+                ≈ {remainingKm.toLocaleString("fr-FR")} km de durée de vie
+                restante. Usure estimée depuis la photo — ajustez si besoin.
               </span>
             </label>
           </div>

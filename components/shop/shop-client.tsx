@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { ArrowUpRight, Search, Sparkles } from "lucide-react";
+import { ArrowUpRight, ScanLine, Search, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -87,7 +88,83 @@ function TyreCard({ tyre }: { tyre: ShopTyre }) {
   );
 }
 
+/** Bandeau « pneu scanné » affiché en tête de boutique quand on arrive depuis le scan. */
+function ScannedTyreHero({ tyre }: { tyre: ShopTyre }) {
+  const [open, setOpen] = useState(false);
+  const families = familiesOf(tyre);
+
+  return (
+    <section className="overflow-hidden rounded-2xl bg-card ring-2 ring-michelin-blue">
+      <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center md:p-6">
+        <div className="relative aspect-square w-full max-w-[220px] shrink-0 self-center overflow-hidden rounded-xl bg-michelin-blue-light/40 sm:w-56">
+          <Image
+            src={tyre.image}
+            alt={`MICHELIN ${tyre.name}`}
+            fill
+            sizes="224px"
+            className="object-contain p-5"
+          />
+          {tyre.isNew && (
+            <span className="absolute top-3 left-3 rounded-full bg-michelin-yellow px-2.5 py-1 text-[11px] font-bold tracking-wide text-michelin-blue">
+              NOUVEAU
+            </span>
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-michelin-blue px-3 py-1 text-xs font-bold tracking-wide text-white">
+            <ScanLine className="size-3.5" />
+            Pneu scanné
+          </span>
+          <h2 className="mt-2 font-heading text-xl font-bold md:text-2xl">
+            MICHELIN {tyre.name}
+          </h2>
+          <p className="mt-1.5 text-sm text-muted-foreground">{tyre.claim}</p>
+
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {tyre.categories.map((c) => (
+              <span
+                key={c}
+                className="rounded-full bg-michelin-blue-light px-2.5 py-1 text-[11px] font-semibold tracking-wide text-michelin-blue"
+              >
+                {c}
+              </span>
+            ))}
+            {tyre.gamme && (
+              <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+                Ligne {tyre.gamme}
+              </span>
+            )}
+          </div>
+
+          {families.length > 0 && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Adapté à : {families.join(", ")}
+            </p>
+          )}
+
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <span className="font-heading text-xl font-bold text-michelin-blue">
+              {formatPrice(priceOf(tyre))}
+            </span>
+            <Button type="button" onClick={() => setOpen(true)}>
+              Voir les détails
+              <ArrowUpRight className="size-3.5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {open && <TyreDetailModal tyre={tyre} onClose={() => setOpen(false)} />}
+    </section>
+  );
+}
+
 export function ShopClient() {
+  const searchParams = useSearchParams();
+  const scannedSlug = searchParams.get("scanned");
+  const scannedTyre = SHOP_CATALOG.find((t) => t.slug === scannedSlug) ?? null;
+
   const [family, setFamily] = useState<BikeFamily | null>(null);
   const [query, setQuery] = useState("");
 
@@ -117,6 +194,8 @@ export function ShopClient() {
 
   return (
     <div className="space-y-8">
+      {scannedTyre && <ScannedTyreHero tyre={scannedTyre} />}
+
       {/* Suggesteur : bande immersive bleu MICHELIN */}
       <section className="rounded-2xl bg-michelin-blue p-5 text-white md:p-7">
         <div className="flex items-center gap-2 text-sm font-medium text-michelin-blue-light">

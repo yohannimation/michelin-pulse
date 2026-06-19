@@ -3,6 +3,17 @@
 import { redirect } from "next/navigation";
 
 import { addTyre, type TyrePosition } from "@/lib/tyre-store";
+import { tyreModelOf, type TyreModel } from "@/lib/tyres";
+import { identifyTyreFromPhoto } from "@/lib/shop/vision";
+
+/** Identifie un pneu MICHELIN photographié, par comparaison avec la boutique. */
+export async function identifyScannedTyre(formData: FormData): Promise<TyreModel | null> {
+  const file = formData.get("photo");
+  if (!(file instanceof File)) return null;
+
+  const tyre = await identifyTyreFromPhoto(file);
+  return tyre ? tyreModelOf(tyre) : null;
+}
 
 function asPosition(v: FormDataEntryValue | null): TyrePosition {
   return v === "ARRIÈRE" ? "ARRIÈRE" : "AVANT";

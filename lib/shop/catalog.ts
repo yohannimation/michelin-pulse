@@ -584,6 +584,43 @@ export function familiesOf(tyre: ShopTyre): BikeFamily[] {
   return BIKE_FAMILIES.filter((f) => set.has(f));
 }
 
+// Taille de référence par famille de vélo (un pneu existe en plusieurs
+// tailles sur michelin.fr ; on en retient une seule, indicative, pour le scan).
+const FAMILY_SIZE: Record<BikeFamily, string> = {
+  Route: "700×28c",
+  Gravel: "700×40c",
+  VTT: "29×2.3",
+  Électrique: "700×42c",
+  "Ville & Rando": "700×35c",
+  BMX: "20×2.1",
+  Enfant: "20×1.75",
+};
+
+/** Taille de référence d'un pneu, déduite de sa famille principale. */
+export function sizeOf(tyre: ShopTyre): string {
+  return FAMILY_SIZE[familiesOf(tyre)[0] ?? "Route"];
+}
+
+// Durée de vie de base par gamme (km) : plus la ligne est tournée course,
+// plus la gomme est tendre et s'use vite.
+const GAMME_BASE_LIFESPAN_KM: Record<TyreGamme, number> = {
+  Racing: 3500,
+  Competition: 5000,
+  Performance: 6500,
+  Access: 8000,
+};
+
+/** Durée de vie estimée d'un pneu, en km (simulé, déterministe). */
+export function lifespanKmOf(tyre: ShopTyre): number {
+  const base = tyre.gamme ? GAMME_BASE_LIFESPAN_KM[tyre.gamme] : 6000;
+  return base + (hash(tyre.slug) % 10) * 100;
+}
+
+/** Terrain conseillé d'un pneu, déduit de sa famille principale. */
+export function terrainOf(tyre: ShopTyre): BikeFamily {
+  return familiesOf(tyre)[0] ?? "Route";
+}
+
 /** URL de la fiche produit sur michelin.fr. */
 export function productUrl(tyre: ShopTyre): string {
   return `https://www.michelin.fr/bicycle/tyres/${tyre.slug}`;
