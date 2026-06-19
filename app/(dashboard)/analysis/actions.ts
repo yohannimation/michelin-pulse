@@ -3,6 +3,21 @@
 import { redirect } from "next/navigation";
 
 import { addTyre, type TyrePosition } from "@/lib/tyre-store";
+import { identifyByFingerprint, type TyreModel } from "@/lib/tyres";
+import { looksLikeTyre } from "@/lib/shop/vision";
+
+/**
+ * Identifie un pneu MICHELIN photographié. Vérifie d'abord que la photo a une
+ * chance raisonnable de montrer un pneu, puis choisit un modèle du catalogue
+ * de façon simulée (déterministe, pas une vraie reconnaissance de modèle).
+ */
+export async function identifyScannedTyre(formData: FormData): Promise<TyreModel | null> {
+  const file = formData.get("photo");
+  if (!(file instanceof File)) return null;
+
+  if (!(await looksLikeTyre(file))) return null;
+  return identifyByFingerprint(`${file.name}-${file.size}`);
+}
 
 function asPosition(v: FormDataEntryValue | null): TyrePosition {
   return v === "ARRIÈRE" ? "ARRIÈRE" : "AVANT";
