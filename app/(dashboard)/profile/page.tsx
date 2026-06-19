@@ -60,7 +60,7 @@ export default async function Profile() {
       Icon: Bag2,
     },
     {
-      href: "/profile/my-bike",
+      href: "/profile/recycling",
       title: "Mes recyclages",
       subtitle: "1 remboursement en attente", // placeholder
       Icon: RecycleIcon,

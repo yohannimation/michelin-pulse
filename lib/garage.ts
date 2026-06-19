@@ -88,16 +88,35 @@ export async function getGarage(): Promise<GarageBike[]> {
 
   const { accessToken } = session;
   let bikes: { id: string; name: string; distance: number }[] = [];
-  try {
-    const athlete = await getDetailedAthlete(accessToken);
-    bikes = athlete.bikes ?? [];
-  } catch {
-    return [];
+
+  if (!accessToken) {
+    bikes = [
+      { id: "mock-road-bike", name: "Vélo Route Spécialisé", distance: 4500000 },
+      { id: "mock-gravel-bike", name: "Gravel Polyvalent", distance: 1200000 },
+    ];
+  } else {
+    try {
+      const athlete = await getDetailedAthlete(accessToken);
+      bikes = athlete.bikes ?? [];
+    } catch {
+      bikes = [
+        { id: "mock-road-bike", name: "Vélo Route Spécialisé", distance: 4500000 },
+        { id: "mock-gravel-bike", name: "Gravel Polyvalent", distance: 1200000 },
+      ];
+    }
   }
 
   // Détail de chaque vélo (type de cadre, marque/modèle). Tolérant aux pannes.
   const detailed = await Promise.all(
     bikes.map(async (b) => {
+      if (b.id.startsWith("mock-")) {
+        return {
+          id: b.id,
+          name: b.name,
+          frame_type: b.id === "mock-road-bike" ? 3 : 5,
+          distance: b.distance,
+        };
+      }
       try {
         return await getGear(b.id, accessToken);
       } catch {

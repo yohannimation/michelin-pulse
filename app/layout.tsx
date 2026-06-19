@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./michelin-poc.css";
 import { michelin, notoSans } from "./fonts";
 
 export const metadata: Metadata = {

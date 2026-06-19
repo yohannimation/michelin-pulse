@@ -12,14 +12,10 @@ export function MobileTopBar({
 }) {
   return (
     <div className="sticky top-0 z-40 -mx-4 flex items-center justify-between bg-background/85 px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 backdrop-blur md:hidden">
-      <Image
+      <img
         src="/michelin-18.svg"
         alt="Michelin"
-        width={120}
-        height={40}
         className="h-7 w-auto"
-        unoptimized
-        priority
       />
       <div className="flex items-center gap-3">
         <button

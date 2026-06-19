@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, Search, Sparkles } from "lucide-react";
+import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,16 @@ import {
   type ShopTyre,
 } from "@/lib/shop/catalog";
 import { TyreDetailModal } from "@/components/shop/tyre-detail-modal";
+import { useStore } from "@/store/useStore";
+
+const ThreeCanvas = dynamic(
+  () => import("@/components/Michelin/ThreeCanvas").then((m) => m.default),
+  { ssr: false }
+);
+const ConfiguratorPanel = dynamic(
+  () => import("@/components/Michelin/ConfiguratorPanel").then((m) => m.default),
+  { ssr: false }
+);
 
 /** Visuel produit (photo locale dans /public/tyres), cliquable. */
 function TyreVisual({ tyre, onOpen }: { tyre: ShopTyre; onOpen: () => void }) {
@@ -91,6 +102,26 @@ export function ShopClient() {
   const [family, setFamily] = useState<BikeFamily | null>(null);
   const [query, setQuery] = useState("");
 
+  const panelOpen = useStore((s: any) => s.panelOpen);
+  const openPanel = useStore((s: any) => s.openPanel);
+  const setPatterns = useStore((s: any) => s.setPatterns);
+  const setColors = useStore((s: any) => s.setColors);
+
+  useEffect(() => {
+    if (panelOpen) {
+      import("@/experience/World/TireCatalog.js").then((mod) => {
+        setPatterns(mod.TIRE_PATTERNS);
+        setColors(mod.TIRE_COLORS);
+      });
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [panelOpen, setPatterns, setColors]);
+
   // Nombre de pneus par famille (pour les pastilles du suggesteur).
   const familyCounts = useMemo(() => {
     const counts = new Map<BikeFamily, number>();
@@ -127,16 +158,26 @@ export function ShopClient() {
           Trouvez le pneu fait pour votre vélo
         </h2>
 
-        <div className="relative mt-4">
-          <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-michelin-blue/60" />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher un pneu, un usage…"
-            className="h-12 w-full rounded-xl border-0 bg-white pr-4 pl-12 text-michelin-blue outline-none ring-2 ring-transparent placeholder:text-michelin-blue/50 focus:ring-michelin-yellow"
-            aria-label="Rechercher un pneu"
-          />
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-michelin-blue/60" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Rechercher un pneu, un usage…"
+              className="h-12 w-full rounded-xl border-0 bg-white pr-4 pl-12 text-michelin-blue outline-none ring-2 ring-transparent placeholder:text-michelin-blue/50 focus:ring-michelin-yellow"
+              aria-label="Rechercher un pneu"
+            />
+          </div>
+          <Button
+            type="button"
+            onClick={openPanel}
+            className="h-12 rounded-xl bg-michelin-yellow text-michelin-blue hover:bg-michelin-yellow/90 font-bold gap-2 cursor-pointer"
+          >
+            <Sparkles className="size-5 fill-michelin-blue text-michelin-blue" />
+            Configurateur 3D
+          </Button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -181,6 +222,37 @@ export function ShopClient() {
           </div>
         )}
       </section>
+
+      {panelOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col md:flex-row bg-[#000c34] text-white">
+          {/* Preloader */}
+          <div className="preloader">
+            <div className="preloader-wrapper" style={{ textAlign: 'center', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <div className="size-4 rounded-full bg-[#fce500] animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="size-4 rounded-full bg-[#fce500] animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="size-4 rounded-full bg-[#fce500] animate-bounce"></div>
+              </div>
+              <p style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)' }}>
+                Chargement de la scène 3D...
+              </p>
+            </div>
+          </div>
+
+          {/* 3D Scene */}
+          <div className="relative h-[45vh] md:h-full md:flex-1 bg-black">
+            <ThreeCanvas />
+            
+            {/* Quick tips overlay */}
+            <div className="absolute top-4 left-4 z-10 rounded-xl bg-[#000c34]/85 px-4 py-2.5 text-xs font-semibold backdrop-blur text-white/90 ring-1 ring-white/10 pointer-events-none">
+              🖱️ Glissez pour faire pivoter le vélo
+            </div>
+          </div>
+
+          {/* Panel overlay */}
+          <ConfiguratorPanel />
+        </div>
+      )}
     </div>
   );
 }

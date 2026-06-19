@@ -82,14 +82,10 @@ export function SiteHeader({ avatar }: { avatar?: string }) {
       <header className="sticky top-0 z-50 hidden border-b border-border bg-background/85 backdrop-blur md:block">
         <div className="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto_1fr] items-center px-6">
           <Link href="/" className="justify-self-start" aria-label="Accueil">
-            <Image
+            <img
               src="/michelin-18.svg"
               alt="Michelin"
-              width={197}
-              height={60}
               className="h-[60px] w-auto"
-              unoptimized
-              priority
             />
           </Link>
 

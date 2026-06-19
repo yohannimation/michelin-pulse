@@ -64,7 +64,7 @@ export async function readSession(): Promise<SessionData | null> {
  */
 export async function getAccessToken(): Promise<string | null> {
   const session = await readSession();
-  if (!session) return null;
+  if (!session || !session.accessToken) return null;
 
   // Marge de 60s pour éviter d'utiliser un token sur le point d'expirer.
   if (session.expiresAt - 60 > Math.floor(Date.now() / 1000)) {

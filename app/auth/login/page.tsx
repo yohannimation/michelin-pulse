@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { Bike, Check, Droplet, Gauge, Zap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -38,14 +37,10 @@ export default async function Login({
       <main className="flex flex-1 flex-col justify-center px-6">
         {/* Brand lockup */}
         <div className="flex items-center justify-center gap-4">
-          <Image
+          <img
             src="/michelin-18.svg"
             alt="Michelin"
-            width={260}
-            height={80}
             className="h-20 w-auto"
-            unoptimized
-            priority
           />
 
           <span className="text-2xl font-light text-muted-foreground">x</span>
@@ -94,7 +89,18 @@ export default async function Login({
             Se connecter avec Strava
           </a>
         </Button>
-        <p className="mt-3 text-center text-xs text-muted-foreground">
+        <Button
+          asChild
+          size="lg"
+          variant="outline"
+          className="mt-3 h-auto w-full gap-1 rounded-xl border-michelin-blue text-michelin-blue hover:bg-michelin-blue/5 flex flex-col py-3"
+        >
+          <a href="/api/auth/guest">
+            <span className="text-base font-semibold">Continuer sans Strava</span>
+            <span className="text-xs font-normal opacity-80">(Vous perdrez certaines fonctionnalités)</span>
+          </a>
+        </Button>
+        <p className="mt-4 text-center text-xs text-muted-foreground">
           Lecture seule · révocable à tout moment · RGPD
         </p>
         </footer>

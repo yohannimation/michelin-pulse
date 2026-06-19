@@ -31,5 +31,5 @@
     "**/*.mts",
     "public/sw.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "michelin-poc-main"]
 }

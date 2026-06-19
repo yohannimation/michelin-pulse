@@ -72,6 +72,34 @@ export async function getProfileData(): Promise<ProfileData | null> {
       ? athlete.profile
       : undefined;
 
+  if (!accessToken) {
+    const store = await readTyres();
+    let michelinKm = 0;
+    const mockBikes = [
+      { id: "mock-road-bike", name: "Vélo Route Spécialisé", distance: 4500000 },
+      { id: "mock-gravel-bike", name: "Gravel Polyvalent", distance: 1200000 },
+    ];
+    for (const bike of mockBikes) {
+      const bikeKm = Math.round(bike.distance / 1000);
+      for (const reg of store[bike.id] ?? []) {
+        michelinKm += Math.max(0, bikeKm - reg.baselineKm);
+      }
+    }
+    return {
+      isConnected: false,
+      isLive: true,
+      name: "Alex (Invité)",
+      initials: "AI",
+      avatar: undefined,
+      subtitle: "Paris, France",
+      tier: tierFromKm(michelinKm),
+      michelinKm,
+      stravaKm: 5700,
+      rides: 84,
+      bikes: 2,
+    };
+  }
+
   let detailed: StravaDetailedAthlete | undefined;
   let stats: StravaStats | undefined;
   try {
